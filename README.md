@@ -44,7 +44,7 @@ Steps:
   ```bash
 export VERSION=3.17
 export ARCH=arm
-export $ARTIFACTS=artifacts
+export ARTIFACTS=artifacts
 ```
 
 - Download archive via web
