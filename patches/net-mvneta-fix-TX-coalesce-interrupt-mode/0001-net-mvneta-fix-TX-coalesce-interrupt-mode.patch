@@ -1,0 +1,64 @@
+From 01b23da3607dbce1d1abfe5b7f092de11ae327cf Mon Sep 17 00:00:00 2001
+From: Willy Tarreau <w@1wt.eu>
+Date: Sat, 25 Oct 2014 19:12:49 +0200
+Subject: net: mvneta: fix TX coalesce interrupt mode
+
+The mvneta driver sets the amount of Tx coalesce packets to 16 by
+default. Normally that does not cause any trouble since the driver
+uses a much larger Tx ring size (532 packets). But some sockets
+might run with very small buffers, much smaller than the equivalent
+of 16 packets. This is what ping is doing for example, by setting
+SNDBUF to 324 bytes rounded up to 2kB by the kernel.
+
+The problem is that there is no documented method to force a specific
+packet to emit an interrupt (eg: the last of the ring) nor is it
+possible to make the NIC emit an interrupt after a given delay.
+
+In this case, it causes trouble, because when ping sends packets over
+its raw socket, the few first packets leave the system, and the first
+15 packets will be emitted without an IRQ being generated, so without
+the skbs being freed. And since the socket's buffer is small, there's
+no way to reach that amount of packets, and the ping ends up with
+"send: no buffer available" after sending 6 packets. Running with 3
+instances of ping in parallel is enough to hide the problem, because
+with 6 packets per instance, that's 18 packets total, which is enough
+to grant a Tx interrupt before all are sent.
+
+The original driver in the LSP kernel worked around this design flaw
+by using a software timer to clean up the Tx descriptors. This timer
+was slow and caused terrible network performance on some Tx-bound
+workloads (such as routing) but was enough to make tools like ping
+work correctly.
+
+Instead here, we simply set the packet counts before interrupt to 1.
+This ensures that each packet sent will produce an interrupt. NAPI
+takes care of coalescing interrupts since the interrupt is disabled
+once generated.
+
+No measurable performance impact nor CPU usage were observed on small
+nor large packets, including when saturating the link on Tx, and this
+fixes tools like ping which rely on too small a send buffer.
+
+This fix needs to be backported to stable kernels starting with 3.10.
+
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+---
+ drivers/net/ethernet/marvell/mvneta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 4762994..35bfba7 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -214,7 +214,7 @@
+ /* Various constants */
+ 
+ /* Coalescing */
+-#define MVNETA_TXDONE_COAL_PKTS		16
++#define MVNETA_TXDONE_COAL_PKTS		1
+ #define MVNETA_RX_COAL_PKTS		32
+ #define MVNETA_RX_COAL_USEC		100
+ 
+-- 
+1.7.12.2.21.g234cd45.dirty
+
