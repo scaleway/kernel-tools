@@ -28,6 +28,23 @@ cat $TMPGIT/aufs-aufs3-standalone/aufs3-{base,kbuild,loopback,mmap,standalone}.p
 rm -rf $TMPGIT/aufs-aufs3-standalone
 
 # Enable module
-echo "CONFIG_AUFS_FS=m" >> .config
+cat <<EOF  >> .config
+CONFIG_AUFS_BDEV_LOOP=y
+CONFIG_AUFS_BRANCH_MAX_1023=y
+CONFIG_AUFS_FHSM=y
+CONFIG_AUFS_FS=m
+CONFIG_AUFS_RDU=y
+CONFIG_AUFS_SBILIST=y
+# CONFIG_AUFS_BRANCH_MAX_127 is not set
+# CONFIG_AUFS_BRANCH_MAX_32767 is not set
+# CONFIG_AUFS_BRANCH_MAX_511 is not set
+# CONFIG_AUFS_BR_FUSE is not set
+# CONFIG_AUFS_BR_HFSPLUS is not set
+# CONFIG_AUFS_BR_RAMFS is not set
+# CONFIG_AUFS_DEBUG is not set
+# CONFIG_AUFS_EXPORT is not set
+# CONFIG_AUFS_HNOTIFY is not set
+# CONFIG_AUFS_SHWH is not set
+EOF
 
 printf "Patched Kernel $KVER in $(cwd) with AUFS support!"
