@@ -2,6 +2,7 @@ CONFIG ?=		.config-3.18-std
 KERNEL ?=		$(shell echo $(CONFIG) | cut -d- -f2)
 NAME ?=			moul/kernel-builder:$(KERNEL)-cross-armhf
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo | sed 's/[^0-9]//g')
+J ?=			-j $(CONCURRENCY_LEVEL)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e INSTALL_HDR_PATH=build/ \
@@ -30,7 +31,7 @@ menuconfig:	local_assets
 
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c 'make uImage && make modules && make headers_install && make modules_install'
+		/bin/bash -c 'make $(J) uImage && make $(J) modules && make headers_install && make modules_install'
 
 
 clean:
