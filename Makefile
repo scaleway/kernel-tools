@@ -34,7 +34,7 @@ build:	local_assets
 			make headers_install INSTALL_HDR_PATH=build && \
 			make modules_install INSTALL_MOD_PATH=build && \
 			make uinstall INSTALL_PATH=build && \
-			cp arch/arm/boot/uImage build/uImage-$(cat include/config/kernel.release) \
+			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` \
 		'
 
 
