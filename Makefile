@@ -7,8 +7,10 @@ DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e INSTALL_HDR_PATH=build/ \
 			-e INSTALL_MOD_PATH=build/ \
 			-e INSTALL_PATH=build/
+
 DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/usr/src/linux/.config \
-			-v $(PWD)/dist:/usr/src/linux/build/
+			-v $(PWD)/dist:/usr/src/linux/build/ \
+			-v $(PWD)/ccache:/ccache
 DOCKER_RUN_OPTS ?=	-it --rm
 
 
@@ -30,14 +32,14 @@ build:	local_assets
 		make -j $(NPROC) uImage modules headers_install modules_install
 
 
-local_assets: $(CONFIG) dist/
+local_assets: $(CONFIG) dist/ ccache
 
 
 $(CONFIG):
 	touch $(CONFIG)
 
 
-dist:
+dist ccache:
 	mkdir -p $@
 
 
