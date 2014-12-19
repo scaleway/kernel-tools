@@ -19,9 +19,9 @@ menuconfig:
 
 
 build:
-	mkdir -p build
+	mkdir -p dist
 	docker run -it --rm \
 		-v $(PWD)/$(CONFIG):/usr/src/linux/.config \
-		-v $(PWD)/build:/usr/src/linux/build/ \
+		-v $(PWD)/dist:/usr/src/linux/build/ \
 		$(NAME) \
 		make -j $(NPROC) uImage modules LOADADDR=0x8000
