@@ -5,9 +5,6 @@ CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo | sed 's/[^0-9]//
 J ?=			-j $(CONCURRENCY_LEVEL)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
-			-e INSTALL_HDR_PATH=build/ \
-			-e INSTALL_MOD_PATH=build/ \
-			-e INSTALL_PATH=build/ \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
 DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/usr/src/linux/.config \
@@ -31,7 +28,14 @@ menuconfig:	local_assets
 
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c 'make $(J) uImage && make $(J) modules && make headers_install && make modules_install'
+		/bin/bash -xc ' \
+			make $(J) uImage && \
+			make $(J) modules && \
+			make headers_install INSTALL_HDR_PATH=build && \
+			make modules_install INSTALL_MOD_PATH=build && \
+			make uinstall INSTALL_PATH=build && \
+			cp arch/arm/boot/uImage build/uImage-$(cat include/config/kernel.release) \
+		'
 
 
 clean:
