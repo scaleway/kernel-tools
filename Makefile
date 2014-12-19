@@ -8,7 +8,7 @@ run:
 
 
 menuconfig:
-	docker run -it --rm -v $(PWD)/$(CONFIG):/usr/src/linux/.config $(NAME) make menuconfig
+	docker run -it --rm -v $(PWD)/$(CONFIG):/tmp/.config $(NAME) /bin/bash -c 'cp /tmp/.config .config && make menuconfig && cp .config /tmp/.config'
 
 
 build:
