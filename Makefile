@@ -1,12 +1,13 @@
-CONFIG ?=	.config-3.18-std
-KERNEL ?=	$(shell echo $(CONFIG) | cut -d- -f2)
-NAME ?=		moul/kernel-builder:$(KERNEL)-cross-armhf
-NPROC ?=	$(shell echo `nproc` ' * 2' | bc 2>/dev/null || nproc)
+CONFIG ?=		.config-3.18-std
+KERNEL ?=		$(shell echo $(CONFIG) | cut -d- -f2)
+NAME ?=			moul/kernel-builder:$(KERNEL)-cross-armhf
+CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo | sed 's/[^0-9]//g')
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e INSTALL_HDR_PATH=build/ \
 			-e INSTALL_MOD_PATH=build/ \
-			-e INSTALL_PATH=build/
+			-e INSTALL_PATH=build/ \
+			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
 DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/usr/src/linux/.config \
 			-v $(PWD)/dist:/usr/src/linux/build/ \
@@ -29,7 +30,12 @@ menuconfig:	local_assets
 
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		make -j $(NPROC) uImage modules headers_install modules_install
+		/bin/bash -c 'make uImage && make modules && make headers_install && make modules_install'
+
+
+clean:
+fclean:	clean/
+	rm -rf dist ccache
 
 
 local_assets: $(CONFIG) dist/ ccache
