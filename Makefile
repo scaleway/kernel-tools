@@ -1,7 +1,7 @@
 CONFIG ?=	.config-3.18-std
 KERNEL ?=	$(shell echo $(CONFIG) | cut -d- -f2)
 NAME ?=		moul/kernel-builder:$(KERNEL)-cross-armhf
-NPROC ?=	$(shell echo `nproc` ' * 2' | bc)
+NPROC ?=	$(shell echo `nproc` ' * 2' | bc 2>/dev/null || nproc)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e INSTALL_HDR_PATH=build/ \
