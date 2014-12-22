@@ -1,7 +1,7 @@
 CONFIG ?=		.config-3.18-std
 KERNEL ?=		$(shell echo $(CONFIG) | cut -d- -f2)
 NAME ?=			moul/kernel-builder:$(KERNEL)-cross-armhf
-CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo | sed 's/[^0-9]//g' 2>/dev/null || sysctl hw.ncpu | awk '{print $2}')
+CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
