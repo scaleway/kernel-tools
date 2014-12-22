@@ -44,6 +44,11 @@ build:	local_assets
 		'
 
 
+ccache_stats:
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+		ccache -s
+
+
 clean:
 fclean:	clean/
 	rm -rf dist ccache
