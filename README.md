@@ -25,6 +25,25 @@ Releases
 
 ---
 
+Build a custom kernel using Docker
+==================================
+
+Run a `make menuconfig` for `.config-3.18-std`
+
+    make menuconfig CONFIG=.config-3.18-std
+
+Build a kernel with `.config-3.17-std` file
+
+    make build CONFIG=.config-3.17-std
+
+Create a new `.config-3.10-new` file from scratch for kernel `3.10`
+
+    make defconfig CONFIG=.config-3.10-new
+
+Debug the build container / run custom command
+
+    make run CONFIG=.config-3.17-std
+
 Build a custom kernel from scratch
 ==================================
 
