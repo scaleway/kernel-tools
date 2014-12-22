@@ -7,7 +7,7 @@ J ?=			-j $(CONCURRENCY_LEVEL)
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
-DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/usr/src/linux/.config \
+DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/tmp/.config \
 			-v $(PWD)/dist:/usr/src/linux/build/ \
 			-v $(PWD)/ccache:/ccache
 DOCKER_RUN_OPTS ?=	-it --rm
@@ -26,9 +26,15 @@ menuconfig:	local_assets
 		/bin/bash -c 'cp /tmp/.config .config && make menuconfig && cp .config /tmp/.config'
 
 
+defconfig:	local_assets
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+		/bin/bash -c 'cp /tmp/.config .config && make mvebu_defconfig && cp .config /tmp/.config'
+
+
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
 		/bin/bash -xc ' \
+			cp /tmp/.config .config && \
 			make $(J) uImage && \
 			make $(J) modules && \
 			make headers_install INSTALL_HDR_PATH=build && \
