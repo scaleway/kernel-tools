@@ -52,6 +52,7 @@ ccache_stats:
 
 
 clean:
+	rm -rf dist/$(KERNEL_FULL)
 fclean:	clean/
 	rm -rf dist ccache
 
