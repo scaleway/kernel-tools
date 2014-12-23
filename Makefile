@@ -46,6 +46,7 @@ build:	local_assets
 			make uinstall INSTALL_PATH=build && \
 			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` \
 		'
+	$(MAKE) dist/$(KERNEL_FULL)/build.txt
 
 
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
@@ -54,6 +55,7 @@ publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	s3cmd put --acl-public dist/$(KERNEL_FULL)/uImage* $(S3_TARGET)
 	s3cmd put --acl-public dist/$(KERNEL_FULL)/config* $(S3_TARGET)
 	s3cmd put --acl-public dist/$(KERNEL_FULL)/vmlinuz* $(S3_TARGET)
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/build.txt $(S3_TARGET)
 
 
 dist/$(KERNEL_FULL)/lib.tar.gz: dist/$(KERNEL_FULL)/lib
@@ -62,6 +64,16 @@ dist/$(KERNEL_FULL)/lib.tar.gz: dist/$(KERNEL_FULL)/lib
 
 dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
 	tar -C dist/$(KERNEL_FULL) -cvzf $@ include
+
+
+dist/$(KERNEL_FULL)/build.txt: dist/$(KERNEL_FULL)
+	echo "=== $(KERNEL_FULL) - built on $(shell date)" > $@
+	echo "=== gcc version" >> $@
+	gcc --version >> $@
+	echo "=== file listing" >> $@
+	cd dist/$(KERNEL_FULL) && find . -type f -ls >> build.txt
+	echo "=== sizes" >> $@
+	cd dist/$(KERNEL_FULL) && du -sh * >> build.txt
 
 
 ccache_stats:
@@ -96,4 +108,4 @@ dist/$(KERNEL_FULL) ccache:
 	mkdir -p $@
 
 
-.PHONY:	all build run menuconfig build
+.PHONY:	all build run menuconfig build clean fclean ccache_stats dist/$(KERNEL_FULL)/build.txt
