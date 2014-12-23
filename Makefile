@@ -52,6 +52,14 @@ ccache_stats:
 		ccache -s
 
 
+qemu:
+	qemu-system-arm \
+		-M versatilepb \
+		-m 256 \
+		-initrd ./dist/$(KERNEL_FULL)/initrd.img-* \
+		-kernel ./dist/$(KERNEL_FULL)/uImage-* \
+		-append "console=tty1"
+
 clean:
 	rm -rf dist/$(KERNEL_FULL)
 fclean:	clean/
