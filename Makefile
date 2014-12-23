@@ -79,7 +79,9 @@ qemu:
 
 clean:
 	rm -rf dist/$(KERNEL_FULL)
-fclean:	clean/
+
+
+fclean:	clean
 	rm -rf dist ccache
 
 
