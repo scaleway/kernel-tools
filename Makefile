@@ -6,6 +6,7 @@ NAME ?=			moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
 ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
+S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
@@ -45,6 +46,22 @@ build:	local_assets
 			make uinstall INSTALL_PATH=build && \
 			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` \
 		'
+
+
+publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/lib.tar.gz $(S3_TARGET)
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/include.tar.gz $(S3_TARGET)
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/uImage* $(S3_TARGET)
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/config* $(S3_TARGET)
+	s3cmd put --acl-public dist/$(KERNEL_FULL)/vmlinuz* $(S3_TARGET)
+
+
+dist/$(KERNEL_FULL)/lib.tar.gz: dist/$(KERNEL_FULL)/lib
+	tar -C dist/$(KERNEL_FULL) -cvzf $@ lib
+
+
+dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
+	tar -C dist/$(KERNEL_FULL) -cvzf $@ include
 
 
 ccache_stats:
