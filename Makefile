@@ -3,6 +3,7 @@ KERNEL_VERSION ?=	$(shell echo $(CONFIG) | cut -d- -f2)
 KERNEL_FLAVOR ?=	$(shell echo $(CONFIG) | cut -d- -f3)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
 NAME ?=			moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
+ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 
@@ -30,7 +31,7 @@ menuconfig:	local_assets
 
 defconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c 'cp /tmp/.config .config && make mvebu_defconfig && cp .config /tmp/.config'
+		/bin/bash -c "cp /tmp/.config .config && make $(ARCH_CONFIG)_defconfig && cp .config /tmp/.config"
 
 
 build:	local_assets
