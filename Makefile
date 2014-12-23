@@ -1,6 +1,8 @@
 CONFIG ?=		.config-3.18-std
-KERNEL ?=		$(shell echo $(CONFIG) | cut -d- -f2)
-NAME ?=			moul/kernel-builder:$(KERNEL)-cross-armhf
+KERNEL_VERSION ?=	$(shell echo $(CONFIG) | cut -d- -f2)
+KERNEL_FLAVOR ?=	$(shell echo $(CONFIG) | cut -d- -f3)
+KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
+NAME ?=			moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 
@@ -8,7 +10,7 @@ DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
 DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/tmp/.config \
-			-v $(PWD)/dist:/usr/src/linux/build/ \
+			-v $(PWD)/dist/$(KERNEL_FULL):/usr/src/linux/build/ \
 			-v $(PWD)/ccache:/ccache
 DOCKER_RUN_OPTS ?=	-it --rm
 
@@ -54,14 +56,14 @@ fclean:	clean/
 	rm -rf dist ccache
 
 
-local_assets: $(CONFIG) dist/ ccache
+local_assets: $(CONFIG) dist/$(KERNEL_FULL)/ ccache
 
 
 $(CONFIG):
 	touch $(CONFIG)
 
 
-dist ccache:
+dist/$(KERNEL_FULL) ccache:
 	mkdir -p $@
 
 
