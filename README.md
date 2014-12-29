@@ -34,8 +34,10 @@ Debug the build container / run custom command
 
     make run CONFIG=.config-3.17-std
     
-Run a kernel in qemu
-====================
+Test a kernel with QEMU
+=======================
+
+You should use a config file made for `versatile`.
 
 Build a `3.18` kernel for `versatile`:
 
