@@ -33,9 +33,22 @@ Create a new `.config-3.10-new` file from scratch for kernel `3.10`
 Debug the build container / run custom command
 
     make run CONFIG=.config-3.17-std
+    
+Run a kernel in qemu
+====================
 
-Build a custom kernel from scratch
-==================================
+Build a `3.18` kernel for `versatile`:
+
+    make build CONFIG=.config-3.18-defconfig_versatile
+    
+Run the kernel in qemu
+
+    make qemu CONFIG=.config-3.18-defconfig_versatile
+
+---
+
+Build a custom kernel from scratch (without Docker)
+===================================================
 
 Prerequisites:
 --------------
