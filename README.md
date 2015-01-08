@@ -33,7 +33,7 @@ Create a new `.config-3.10-new` file from scratch for kernel `3.10`
 Debug the build container / run custom command
 
     make run CONFIG=.config-3.17-std
-    
+
 Test a kernel with QEMU
 =======================
 
@@ -42,7 +42,7 @@ You should use a config file made for `versatile`.
 Build a `3.18` kernel for `versatile`:
 
     make build CONFIG=.config-3.18-defconfig_versatile
-    
+
 Run the kernel in qemu
 
     make qemu CONFIG=.config-3.18-defconfig_versatile
@@ -124,3 +124,8 @@ Releases
 - used .config: https://github.com/online-labs/kernel-config/blob/3.17.0-85/.config-3.17-std
 - community discuttion: https://community.cloud.online.net/t/official-linux-kernel-new-modules-optimizations-hacks/226/6?u=manfred
 - kernel commit: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tag/?id=v3.17
+
+Licensing
+=========
+
+© 2014-2015 Online Labs - [MIT License](https://github.com/online-labs/kernel-config/blob/master/LICENSE).
