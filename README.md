@@ -115,6 +115,28 @@ rm -rf $ARTIFACTS/modules && \
    rm $ARTIFACTS/modules/*/source $ARTIFACTS/modules/*/build
 ```
 
+Minimal configuration for C1 servers
+------------------------------------
+
+```gherkin
+- Networking support
+  - Networking options
+    - 802.1Q/802.1ad VLAN Support -> **YES**
+    - Packet socket -> **YES**
+    - Unix domain sockets -> **YES**
+- Device Drivers
+  - Network device support
+    - PHY Device support and infrastructure
+      - Driver for MDIO Bus/PHY emulation with fixed speed/link PHYs -> **YES**
+  - Block devices
+    - Network block device support -> **YES**
+- Kernel hacking
+  - Kernel low-level debugging functions -> **YES**
+  - Early prink -> **YES**
+- File systems
+  - The Extended 4 (ext4) filesystem -> **YES**
+```
+
 Releases
 ========
 
