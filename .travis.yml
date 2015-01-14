@@ -1,0 +1,6 @@
+language: bash
+
+script:
+    - for file in .config-*; do bash -n $file; done
+    - for file in *.bash; do bash -n $file; done
+    - make -n
