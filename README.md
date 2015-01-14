@@ -1,4 +1,4 @@
-Kernel Config
+Kernel Config [![Build Status](https://travis-ci.org/online-labs/kernel-config.svg?branch=master)](https://travis-ci.org/online-labs/kernel-config)
 =============
 
 https://community.cloud.online.net/t/official-linux-kernel-new-modules-optimizations-hacks/226
