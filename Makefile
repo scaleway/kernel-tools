@@ -35,6 +35,11 @@ defconfig:	local_assets
 		/bin/bash -c "cp /tmp/.config .config && make $(ARCH_CONFIG)_defconfig && cp .config /tmp/.config"
 
 
+oldconfig:	local_assets
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+		/bin/bash -c 'cp /tmp/.config .config && make oldconfig && cp .config /tmp/.config'
+
+
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
 		/bin/bash -xc ' \
