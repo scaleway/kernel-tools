@@ -7,15 +7,15 @@ env:
 
 install:
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     curl -sLo - https://github.com/moul/travis-docker/raw/master/install.sh | sh -xe
+     curl -sLo - https://github.com/moul/travis-docker/raw/master/install.sh | sh -xe;
   fi
 
 script:
 - if [ "$TRAVIS_GLOBAL_WTF" ]; then
-     for file in .config-*; do bash -n $file; done
-     for file in *.bash; do bash -n $file; done
-     make -n
+     for file in .config-*; do bash -n $file; done;
+     for file in *.bash; do bash -n $file; done;
+     make -n;
   fi
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     ./run make oldconfig
+     ./run make oldconfig;
   fi
