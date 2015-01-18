@@ -2,8 +2,9 @@ language: bash
 
 env:
 - TRAVIS_GLOBAL_WTF=1 # See https://github.com/docker/swarm/blob/master/.travis.yml
-- _CONFIG=.config-3.17-std
-- _CONFIG=.config-3.18-std
+# Disabling CONFIG checks for now because of the memory limit on travis
+#- _CONFIG=.config-3.17-std
+#- _CONFIG=.config-3.18-std
 
 install:
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
