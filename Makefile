@@ -103,6 +103,7 @@ local_assets: $(KERNEL)/.config dist/$(KERNEL_FULL)/ ccache
 
 
 $(KERNEL)/.config:
+	mkdir -p $(KERNEL)
 	touch $(KERNEL)/.config
 
 
