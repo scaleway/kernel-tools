@@ -155,12 +155,23 @@ travis_common:
 	find . -name "*.bash" | xargs bash -n
 	make -n
 
-travis_kernel:	local_assets travis_prepare
+tools/docker-checkconfig.sh:
+	curl -sLo $@ https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
+	chmod +x $@
+
+tools/lxc-checkconfig.sh:
+	curl -sLo $@ https://raw.githubusercontent.com/dotcloud/lxc/master/src/lxc/lxc-checkconfig.in
+	chmod +x $@
+
+travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
 	# ./run $(MAKE) oldconfig
 
-	# FIXME: check for kernel compatibility with lxc, cgroups, aufs
-	# FIXME: check for NBD & network support
+	# Optional checks, these checks won't fail but we can see the detail in the Travis build result
+	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
+	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
+
+	# FIXME: check for NBD, network, ext4, loadable kernel modules
 	exit 0
 
 # Docker in Travis toolsuite
