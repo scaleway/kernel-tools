@@ -83,6 +83,16 @@ ccache_stats:
 		ccache -s
 
 
+diff:
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+		/bin/bash -c ' \
+			make $(ARCH_CONFIG)_defconfig && \
+			mv .config .defconfig && \
+			cp /tmp/.config .config && \
+			diff .defconfig .config \
+		'
+
+
 qemu:
 	qemu-system-arm \
 		-M versatilepb \
