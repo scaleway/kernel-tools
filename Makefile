@@ -23,7 +23,7 @@ DOCKER_RUN_OPTS ?=	-it --rm
 all:	build
 
 
-run:	local_assets
+shell:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
 		/bin/bash
 

@@ -30,9 +30,9 @@ Create a new `3.10-new/.config` file from scratch for kernel `3.10`
 
     make defconfig KERNEL=3.10-new
 
-Debug the build container / run custom command
+Run a shell in the container for easy debugging and run custom commands
 
-    make run KERNEL=3.17-std
+    make shell KERNEL=3.17-std
 
 Test a kernel with QEMU
 =======================
