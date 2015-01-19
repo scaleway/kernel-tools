@@ -151,7 +151,7 @@ dist/$(KERNEL_FULL) ccache:
 
 ## Travis
 travis_common:
-	for file in */.config; do bash -n $$file; done
+	#for file in */.config; do bash -n $$file; done
 	find . -name "*.bash" | xargs bash -n
 	make -n
 
@@ -164,15 +164,19 @@ tools/lxc-checkconfig.sh:
 	chmod +x $@
 
 travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
-	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
-	# ./run $(MAKE) oldconfig
+	bash -n $(KERNEL)/.config
 
 	# Optional checks, these checks won't fail but we can see the detail in the Travis build result
 	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
-	# FIXME: check for NBD, network, ext4, loadable kernel modules
-	exit 0
+	grep CONFIG_MVMDIO=y $(KERNEL)/.config
+	grep CONFIG_BLK_DEV_NBD=y $(KERNEL)/.config
+	grep CONFIG_EXT4_FS=y $(KERNEL)/.config
+	# FIXME: check for loadable modules
+
+	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
+	# ./run $(MAKE) oldconfig
 
 # Docker in Travis toolsuite
 travis_prepare:	./run
