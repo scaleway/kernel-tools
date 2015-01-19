@@ -1,6 +1,6 @@
-CONFIG ?=		.config-3.18-std
-KERNEL_VERSION ?=	$(shell echo $(CONFIG) | cut -d- -f2)
-KERNEL_FLAVOR ?=	$(shell echo $(CONFIG) | cut -d- -f3)
+KERNEL ?=		3.18-std
+KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
+KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
 NAME ?=			moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
 ARCH_CONFIG ?=		mvebu_v7
@@ -11,7 +11,7 @@ S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
-DOCKER_VOLUMES ?=	-v $(PWD)/$(CONFIG):/tmp/.config \
+DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dist/$(KERNEL_FULL):/usr/src/linux/build/ \
 			-v $(PWD)/ccache:/ccache
 DOCKER_RUN_OPTS ?=	-it --rm
@@ -99,11 +99,11 @@ fclean:	clean
 	rm -rf dist ccache
 
 
-local_assets: $(CONFIG) dist/$(KERNEL_FULL)/ ccache
+local_assets: $(KERNEL)/.config dist/$(KERNEL_FULL)/ ccache
 
 
-$(CONFIG):
-	touch $(CONFIG)
+$(KERNEL)/.config:
+	touch $(KERNEL)/.config
 
 
 dist/$(KERNEL_FULL) ccache:

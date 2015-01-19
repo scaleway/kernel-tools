@@ -18,21 +18,21 @@ The only things we added are:
 Build a custom kernel using Docker
 ==================================
 
-Run a `make menuconfig` for `.config-3.18-std`
+Run a `make menuconfig` for `3-18-std/.config`
 
-    make menuconfig CONFIG=.config-3.18-std
+    make menuconfig KERNEL=3.18-std
 
-Build a kernel with `.config-3.17-std` file
+Build a kernel with `3.17-std/.config` file
 
-    make build CONFIG=.config-3.17-std
+    make build KERNEL=3.17-std
 
-Create a new `.config-3.10-new` file from scratch for kernel `3.10`
+Create a new `3.10-new/.config` file from scratch for kernel `3.10`
 
-    make defconfig CONFIG=.config-3.10-new
+    make defconfig KERNEL=3.10-new
 
 Debug the build container / run custom command
 
-    make run CONFIG=.config-3.17-std
+    make run KERNEL=3.17-std
 
 Test a kernel with QEMU
 =======================
@@ -41,11 +41,11 @@ You should use a config file made for `versatile`.
 
 Build a `3.18` kernel for `versatile`:
 
-    make build CONFIG=.config-3.18-defconfig_versatile
+    make build KERNEL=3.18-defconfig_versatile
 
 Run the kernel in qemu
 
-    make qemu CONFIG=.config-3.18-defconfig_versatile
+    make qemu KERNEL=3.18-defconfig_versatile
 
 ---
 
