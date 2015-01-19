@@ -14,7 +14,7 @@ env:
 
 install:
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     make travis_prepare
+     make travis_prepare;
   fi
 
 
