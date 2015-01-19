@@ -11,9 +11,12 @@ S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
 
+LINUX_PATH=/usr/src/linux
 DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
-			-v $(PWD)/dist/$(KERNEL_FULL):/usr/src/linux/build/ \
-			-v $(PWD)/ccache:/ccache
+			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
+			-v $(PWD)/ccache:/ccache \
+			-v $(PWD)/patches:$(LINUX_PATH)/patches \
+			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh
 DOCKER_RUN_OPTS ?=	-it --rm
 
 
@@ -27,7 +30,12 @@ run:	local_assets
 
 menuconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c 'cp /tmp/.config .config && make menuconfig && cp .config /tmp/.config'
+		/bin/bash -c ' \
+			cp /tmp/.config .config && \
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			make menuconfig && \
+			cp .config /tmp/.config \
+		'
 
 
 defconfig:	local_assets
@@ -44,6 +52,7 @@ build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
 		/bin/bash -xc ' \
 			cp /tmp/.config .config && \
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi &&
 			make $(J) uImage && \
 			make $(J) modules && \
 			make headers_install INSTALL_HDR_PATH=build && \
@@ -109,7 +118,13 @@ fclean:	clean
 	rm -rf dist ccache
 
 
-local_assets: $(KERNEL)/.config dist/$(KERNEL_FULL)/ ccache
+local_assets: $(KERNEL)/.config $(KERNEL)/patch.sh dist/$(KERNEL_FULL)/ ccache
+
+
+$(KERNEL)/patch.sh:
+	mkdir -p $(KERNEL)
+	touch $(KERNEL)/patch.sh
+	chmod +x $(KERNEL)/patch.sh
 
 
 $(KERNEL)/.config:

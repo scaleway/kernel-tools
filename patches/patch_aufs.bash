@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ###################################################
 ## Patch the Linux source tree with AUFS support ##
 ###################################################
@@ -9,25 +11,29 @@ VERSION=$(grep '^VERSION\s*=' Makefile | cut -d= -f2 | sed 's/\s//g')
 PATCHLEVEL=$(grep '^PATCHLEVEL\s*=' Makefile | cut -d= -f2 | sed 's/\s//g')
 KVER=$VERSION.$PATCHLEVEL
 # Temporary Location
-TMPGIT=`mktemp -d`
+#TMPGIT=`mktemp -d`
+GIT=patches/aufs-aufs3-standalone
 
 # Clone AUFS repo
-git clone -n git://git.code.sf.net/p/aufs/aufs3-standalone $TMPGIT/aufs-aufs3-standalone
+if [ ! -d $GIT ]; then
+    which git || (apt-get update && apt-get install -y git)
+    git clone -n git://git.code.sf.net/p/aufs/aufs3-standalone $GIT
+fi
 
 # Checkout AUFS branch
-pushd $TMPGIT/aufs-aufs3-standalone
+pushd $GIT
 git checkout origin/aufs$KVER
 popd
 
 # Copy in files
-cp -r $TMPGIT/aufs-aufs3-standalone/{Documentation,fs} ./
-cp $TMPGIT/aufs-aufs3-standalone/include/uapi/linux/aufs_type.h ./include/uapi/linux/aufs_type.h
+cp -r $GIT/{Documentation,fs} ./
+cp $GIT/include/uapi/linux/aufs_type.h ./include/uapi/linux/aufs_type.h
 
 # Apply patches
-cat $TMPGIT/aufs-aufs3-standalone/aufs3-{base,kbuild,loopback,mmap,standalone}.patch | patch -p1
+cat $GIT/aufs3-{base,kbuild,loopback,mmap,standalone}.patch | patch -p1
 
 # Clean Up
-rm -rf $TMPGIT/aufs-aufs3-standalone
+#rm -rf $GIT
 
 # Enable module
 cat <<EOF  >> .config
