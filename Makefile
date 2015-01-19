@@ -89,7 +89,7 @@ diff:
 			make $(ARCH_CONFIG)_defconfig && \
 			mv .config .defconfig && \
 			cp /tmp/.config .config && \
-			diff .defconfig .config \
+			diff <(<.defconfig grep "^[^#]" | sort) <(<.config grep "^[^#]" | sort) \
 		'
 
 
