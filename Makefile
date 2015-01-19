@@ -30,7 +30,7 @@ run:	local_assets
 
 menuconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c ' \
+		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
 			make menuconfig && \
@@ -40,19 +40,29 @@ menuconfig:	local_assets
 
 defconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c "cp /tmp/.config .config && make $(ARCH_CONFIG)_defconfig && cp .config /tmp/.config"
+		/bin/bash -xec ' \
+			cp /tmp/.config .config && \
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			make $(ARCH_CONFIG)_defconfig && \
+			cp .config /tmp/.config \
+		'
 
 
 oldconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c 'cp /tmp/.config .config && make oldconfig && cp .config /tmp/.config'
+		/bin/bash -xec ' \
+			cp /tmp/.config .config && \
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			make oldconfig && \
+			cp .config /tmp/.config \
+		'
 
 
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -xc ' \
+		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi &&
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
 			make $(J) uImage && \
 			make $(J) modules && \
 			make headers_install INSTALL_HDR_PATH=build && \
@@ -94,7 +104,7 @@ ccache_stats:
 
 diff:
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
-		/bin/bash -c ' \
+		/bin/bash -xec ' \
 			make $(ARCH_CONFIG)_defconfig && \
 			mv .config .defconfig && \
 			cp /tmp/.config .config && \
