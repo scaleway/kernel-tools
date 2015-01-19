@@ -147,3 +147,25 @@ dist/$(KERNEL_FULL) ccache:
 
 
 .PHONY:	all build run menuconfig build clean fclean ccache_stats
+
+
+## Travis
+travis_common:
+	for file in */.config; do bash -n $$file; done
+	find . -name "*.bash" | xargs bash -n
+	make -n
+
+travis_kernel:	local_assets travis_prepare
+	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
+	# ./run $(MAKE) oldconfig
+
+	# FIXME: check for kernel compatibility with lxc, cgroups, aufs
+	# FIXME: check for NBD & network support
+	exit 0
+
+# Docker in Travis toolsuite
+travis_prepare:	./run
+./run:
+	# Disabled for now (see travis_kernel below)
+	# curl -sLo - https://github.com/moul/travis-docker/raw/master/install.sh | sh -xe
+	exit 0

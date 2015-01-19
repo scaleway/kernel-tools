@@ -1,22 +1,27 @@
 language: bash
 
+
 env:
 - TRAVIS_GLOBAL_WTF=1 # See https://github.com/docker/swarm/blob/master/.travis.yml
-# Disabling CONFIG checks for now because of the memory limit on travis
-#- _CONFIG=.config-3.17-std
-#- _CONFIG=.config-3.18-std
+- _KERNEL=3.2.34-std
+#- _KERNEL=3.14-std
+- _KERNEL=3.17-std
+- _KERNEL=3.17-aufs
+- _KERNEL=3.18-std
+- _KERNEL=3.18-aufs
+#- _KERNEL=3.18-xen
+
 
 install:
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     curl -sLo - https://github.com/moul/travis-docker/raw/master/install.sh | sh -xe;
+     make travis_prepare
   fi
+
 
 script:
 - if [ "$TRAVIS_GLOBAL_WTF" ]; then
-     for file in .config-*; do bash -n $file; done;
-     for file in *.bash; do bash -n $file; done;
-     make -n;
+     make travis_common;
   fi
 - if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     ./run make oldconfig;
+     make travis_kernel KERNEL=${_KERNEL};
   fi
