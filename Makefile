@@ -173,6 +173,10 @@ travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker
 	grep CONFIG_MVMDIO=y $(KERNEL)/.config
 	grep CONFIG_BLK_DEV_NBD=y $(KERNEL)/.config
 	grep CONFIG_EXT4_FS=y $(KERNEL)/.config
+	grep CONFIG_IP_PNP=y  $(KERNEL)/.config
+	grep CONFIG_IP_PNP_DHCP=y  $(KERNEL)/.config
+	grep CONFIG_IP_PNP_BOOTP=y $(KERNEL)/.config
+	grep CONFIG_IP_PNP_RARP=y $(KERNEL)/.config
 	# FIXME: check for loadable modules
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
