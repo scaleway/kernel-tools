@@ -191,7 +191,7 @@ travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
 	# Mandatory check for the non-LSP kernels
-	CONFIG=$(KERNEL)/.config LSP=$(LSP) ./tools/c1-checkconfig.sh
+	CONFIG=$(KERNEL)/.config IS_LSP=$(IS_LSP) ./tools/c1-checkconfig.sh
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
 	# ./run $(MAKE) oldconfig
