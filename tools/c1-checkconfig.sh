@@ -7,22 +7,32 @@ required_configs=(
     IP_PNP
     IP_PNP_DHCP
     IP_PNP_BOOTP
-    IP_PNP_RARP
     MVMDIO
 )
 # FIXME: check for loadable modules
 
+recommended_configs=(
+    IP_PNP_RARP
+)
 
 echo "Checking for required CONFIG_* options in ${CONFIG} (LSP=$LSP)"
 
 has_error=0
 for config in ${required_configs[@]}; do
-    printf "Checking for CONFIG_$config=y...    "
+    printf "Checking for required CONFIG_$config=y...    "
     if grep "CONFIG_$config=y" ${CONFIG} >/dev/null; then
         echo "Ok"
     else
         echo "ERROR"
         has_error=1
+    fi
+done
+for config in ${recommended_configs[@]}; do
+    printf "Checking for recommended CONFIG_$config=y...    "
+    if grep "CONFIG_$config=y" ${CONFIG} >/dev/null; then
+        echo "Ok"
+    else
+        echo "WARNING"
     fi
 done
 
