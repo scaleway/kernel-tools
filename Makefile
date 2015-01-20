@@ -1,8 +1,11 @@
 KERNEL ?=		3.18-std
+-include $(KERNEL)/include.mk
+
+# Default variables
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
-NAME ?=			moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
+DOCKER_BUILDER ?=	moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
 ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
@@ -18,19 +21,19 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches \
 			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh
 DOCKER_RUN_OPTS ?=	-it --rm
-LSP =			$(shell grep 1 $(KERNEL)/is_lsp || echo 0)
+IS_LSP ?=		0
 
 
 all:	build
 
 
 shell:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash
 
 
 menuconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
@@ -40,7 +43,7 @@ menuconfig:	local_assets
 
 
 defconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
@@ -50,7 +53,7 @@ defconfig:	local_assets
 
 
 oldconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
@@ -60,7 +63,7 @@ oldconfig:	local_assets
 
 
 build:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
@@ -99,12 +102,12 @@ dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
 
 
 ccache_stats:
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		ccache -s
 
 
 diff:
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(NAME) \
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			make $(ARCH_CONFIG)_defconfig && \
 			mv .config .defconfig && \

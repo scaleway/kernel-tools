@@ -15,7 +15,7 @@ recommended_configs=(
     IP_PNP_RARP
 )
 
-echo "Checking for required CONFIG_* options in ${CONFIG} (LSP=$LSP)"
+echo "Checking for required CONFIG_* options in ${CONFIG} (IS_LSP=$IS_LSP)"
 
 has_error=0
 for config in ${required_configs[@]}; do
@@ -37,7 +37,7 @@ for config in ${recommended_configs[@]}; do
 done
 
 if [ "${has_error}" == 1 ]; then
-    if [ "$LSP" == 1 ]; then
+    if [ "$IS_LSP" == 1 ]; then
         echo "The kernel does not match all the mainline requirements, but since it is LSP and has a different configuration, this error is just a warning. Exiting normally"
     else
         echo "The kernel does not match all the requirements."
