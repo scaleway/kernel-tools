@@ -1,8 +1,12 @@
 /*
  * Device Tree file for Online-Labs C1 Computing
  *
+ * Copyright (C) 2012-2014 Marvell
  * Copyright (C) 2014-2015 Online Labs
  *
+ * Lior Amsalem <alior@marvell.com>
+ * Gregory CLEMENT <gregory.clement@free-electrons.com>
+ * Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
  * Manfred Touron <mtouron@ocs.online.net>
  * Vincent Auclair <vauclair@online.net>
  *
