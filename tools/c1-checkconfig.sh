@@ -17,7 +17,7 @@ echo "Checking for required CONFIG_* options in ${CONFIG} (LSP=$LSP)"
 
 has_error=0
 for config in ${required_configs[@]}; do
-    printf "Checking for CONFIG_$config=y...\r\t\t\t\t\t\t\t\t"
+    printf "Checking for CONFIG_$config=y...    "
     if grep "CONFIG_$config=y" ${CONFIG} >/dev/null; then
         echo "Ok"
     else
