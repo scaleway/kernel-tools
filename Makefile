@@ -18,6 +18,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches \
 			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh
 DOCKER_RUN_OPTS ?=	-it --rm
+LSP =			$(shell grep 1 $(KERNEL)/is_lsp || echo 0)
 
 
 all:	build
@@ -170,14 +171,8 @@ travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker
 	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
-	grep CONFIG_MVMDIO=y $(KERNEL)/.config
-	grep CONFIG_BLK_DEV_NBD=y $(KERNEL)/.config
-	grep CONFIG_EXT4_FS=y $(KERNEL)/.config
-	grep CONFIG_IP_PNP=y  $(KERNEL)/.config
-	grep CONFIG_IP_PNP_DHCP=y  $(KERNEL)/.config
-	grep CONFIG_IP_PNP_BOOTP=y $(KERNEL)/.config
-	grep CONFIG_IP_PNP_RARP=y $(KERNEL)/.config
-	# FIXME: check for loadable modules
+	# Mandatory check for the non-LSP kernels
+	CONFIG=$(KERNEL)/.config LSP=$(LSP) ./tools/c1-checkconfig.sh
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
 	# ./run $(MAKE) oldconfig
