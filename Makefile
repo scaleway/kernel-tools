@@ -78,6 +78,16 @@ oldconfig:	local_assets
 		'
 
 
+olddefconfig:	local_assets
+	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
+		/bin/bash -xec ' \
+			cp /tmp/.config .config && \
+			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			make olddefconfig && \
+			cp .config /tmp/.config \
+		'
+
+
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
