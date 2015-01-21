@@ -48,44 +48,17 @@ shell:	local_assets
 		/bin/bash
 
 
-menuconfig:	local_assets
+oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
-			make menuconfig && \
+			make $@ && \
 			cp .config /tmp/.config \
 		'
 
 
-defconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
-		/bin/bash -xec ' \
-			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
-			make $(ARCH_CONFIG)_defconfig && \
-			cp .config /tmp/.config \
-		'
-
-
-oldconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
-		/bin/bash -xec ' \
-			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
-			make oldconfig && \
-			cp .config /tmp/.config \
-		'
-
-
-olddefconfig:	local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
-		/bin/bash -xec ' \
-			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
-			make olddefconfig && \
-			cp .config /tmp/.config \
-		'
+defconfig:	$(ARCH_CONFIG)_defconfig
 
 
 build:	local_assets
