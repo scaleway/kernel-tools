@@ -6,13 +6,12 @@ required_configs=(
     EXT4_FS
     IP_PNP
     IP_PNP_DHCP
-    IP_PNP_BOOTP
     MVMDIO
 )
 # FIXME: check for loadable modules
 
 recommended_configs=(
-    IP_PNP_RARP
+    CGROUPS
 )
 
 echo "Checking for required CONFIG_* options in ${CONFIG} (IS_LSP=$IS_LSP)"
