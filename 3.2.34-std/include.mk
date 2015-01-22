@@ -1,1 +1,1 @@
-IS_LSP ?=	1
+KERNEL_TYPE ?=	lsp

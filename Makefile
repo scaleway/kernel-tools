@@ -2,6 +2,7 @@ KERNEL ?=		3.18-std
 -include $(KERNEL)/include.mk
 
 # Default variables
+KERNELS ?=		$(wildcard 3.*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
@@ -21,7 +22,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches \
 			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh
 DOCKER_RUN_OPTS ?=	-it --rm
-IS_LSP ?=		0
+KERNEL_TYPE ?=		mainline
 
 
 all:	build
@@ -33,10 +34,10 @@ info:
 	@echo DOCKER_ENV=$(DOCKER_ENV)
 	@echo DOCKER_RUN_OPTS=$(DOCKER_RUN_OPTS)
 	@echo DOCKER_VOLUMES=$(DOCKER_VOLUMES)
-	@echo IS_LSP=$(IS_LSP)
 	@echo KERNEL=$(KERNEL)
 	@echo KERNEL_FLAVOR=$(KERNEL_FLAVOR)
 	@echo KERNEL_FULL=$(KERNEL_FULL)
+	@echo KERNEL_TYPE=$(KERNEL_TYPE)
 	@echo KERNEL_VERSION=$(KERNEL_VERSION)
 	@echo LINUX_PATH=$(LINUX_PATH)
 	@echo DOCKER_BUILDER=$(DOCKER_BUILDER)
@@ -173,11 +174,20 @@ travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker
 	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
-	# Mandatory check for the non-LSP kernels
-	CONFIG=$(KERNEL)/.config IS_LSP=$(IS_LSP) ./tools/c1-checkconfig.sh
+	# Checking C1 compatibility
+	./tools/verify_kernel_config.pl $(KERNEL_TYPE) $(KERNEL)/.config
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
 	# ./run $(MAKE) oldconfig
+
+
+# travis_common + travis_kernel for each kernels
+travis:	travis_common
+	echo $(KERNELS)
+	for kernel in $(KERNELS); do \
+	  make travis_kernel KERNEL=$$kernel || exit 1; \
+	done
+
 
 # Docker in Travis toolsuite
 travis_prepare:	./run
