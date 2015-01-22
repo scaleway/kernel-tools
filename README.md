@@ -8,10 +8,36 @@ The kernel is built with the official mainline kernel, here are the .config file
 Modifications
 -------------
 
-The only things we added are:
+We added kernel module to simulate some virtualization features:
+- serial console activation
+- remote soft reset trigger
 
-- a kernel module to simulate some virtualization features: handling serial console, being able to soft reset a node from the API
-- a dts file, so the kernel can understand our hardware
+---
+
+Kernels
+=======
+
+Name              | Maintainer      | Sources | Target | Available | Links
+------------------|-----------------|---------|--------|-----------|-------
+3.10-mvebu        | Free Electrons  | Open    | C1     | :x:       | [Sources](https://github.com/MISL-EBU-System-SW/mainline-public/tree/backport-3.10)
+3.10.32-std       | Marvell         | Closed  | C1     | :x:       |
+3.14-defconfig    | Linux community | Open    | n/a    | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.14/)
+3.14-std          | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.14/)
+3.17-aufs         | Linux community | Open    | C1     | :o:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-defconfig    | Linux community | Open    | n/a    | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-kexec        | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-minimal      | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-noacct       | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-perf         | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.17-std          | Linux community | Open    | C1     | :o:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17/)
+3.18-aufs         | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18/)
+3.18-defconfig    | Linux community | Open    | n/a    | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18/)
+3.18-std          | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18/)
+3.18-versatile    | Linux community | Open    | qemu   | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18/)
+3.18-xen          | Linux community | Open    | C1     | :x:       | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18/)
+3.2.34-cesa       | Marvell         | Closed  | C1     | :x:       |
+3.2.34-std        | Marvell         | Closed  | C1     | :o:       |
+3.2.58-std        | Marvell         | Closed  | C1     | :x:       |
 
 ---
 
