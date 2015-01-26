@@ -20,7 +20,8 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
 			-v $(PWD)/ccache:/ccache \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches \
-			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh
+			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh \
+			-v $(PWD)/dtbs/onlinelabs-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-c1.dts
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
 
@@ -73,6 +74,12 @@ build:	local_assets
 			make modules_install INSTALL_MOD_PATH=build && \
 			make uinstall INSTALL_PATH=build && \
 			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` && \
+			( wget http://ftp.fr.debian.org/debian/pool/main/d/device-tree-compiler/device-tree-compiler_1.4.0+dfsg-1_amd64.deb -O /tmp/dtc.deb && \
+			  dpkg -i /tmp/dtc.deb && \
+			  sed -i s/armada-xp-db.dtb/onlinelabs-c1.dtb/g arch/arm/boot/dts/Makefile && \
+			  make dtbs && \
+			  cp arch/arm/boot/dts/onlinelabs-c1.dtb build/ \
+			) ; \
 			( echo "=== $(KERNEL_FULL) - built on `date`" && \
 			  echo "=== gcc version" && \
 			  gcc --version && \
