@@ -47,7 +47,11 @@ info:
 
 shell:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
-		/bin/bash
+		/bin/bash -xec ' \
+			cp /tmp/.config .config && \
+			bash ; \
+			cp .config /tmp/.config \
+		'
 
 
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:	local_assets
