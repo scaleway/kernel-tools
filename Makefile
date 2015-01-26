@@ -24,6 +24,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dtbs/onlinelabs-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-c1.dts
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
+ENTER_COMMAND ?=	true
 
 
 all:	build
@@ -48,6 +49,7 @@ info:
 shell:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
+			$(ENTER_COMMAND) && \
 			cp /tmp/.config .config && \
 			bash ; \
 			cp .config /tmp/.config \
@@ -57,6 +59,7 @@ shell:	local_assets
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
+			$(ENTER_COMMAND) && \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
 			make $@ && \
@@ -70,6 +73,7 @@ defconfig:	$(ARCH_CONFIG)_defconfig
 build:	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
+			$(ENTER_COMMAND) && \
 			cp /tmp/.config .config && \
 			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
 			make $(J) uImage && \
@@ -120,6 +124,7 @@ ccache_stats:
 diff:
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
+			$(ENTER_COMMAND) && \
 			make $(ARCH_CONFIG)_defconfig && \
 			mv .config .defconfig && \
 			cp /tmp/.config .config && \
