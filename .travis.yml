@@ -11,6 +11,7 @@ env:
 - _KERNEL=3.10.39-std
 - _KERNEL=3.14-defconfig
 - _KERNEL=3.14-std
+- _KERNEL=3.14.29-std
 - _KERNEL=3.17-aufs
 - _KERNEL=3.17-defconfig
 - _KERNEL=3.17-kexec
