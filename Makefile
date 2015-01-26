@@ -82,6 +82,8 @@ build:	local_assets
 			make modules_install INSTALL_MOD_PATH=build && \
 			make uinstall INSTALL_PATH=build && \
 			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` && \
+			cp arch/arm/boot/Image build/Image-`cat include/config/kernel.release` && \
+			cp arch/arm/boot/zImage build/zImage-`cat include/config/kernel.release` && \
 			( wget http://ftp.fr.debian.org/debian/pool/main/d/device-tree-compiler/device-tree-compiler_1.4.0+dfsg-1_amd64.deb -O /tmp/dtc.deb && \
 			  dpkg -i /tmp/dtc.deb && \
 			  sed -i s/armada-xp-db.dtb/onlinelabs-c1.dtb/g arch/arm/boot/dts/Makefile && \
