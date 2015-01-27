@@ -1,4 +1,4 @@
-KERNEL ?=		3.18-std
+KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard 3*/.latest)))
 -include $(KERNEL)/include.mk
 
 # Default variables
