@@ -106,7 +106,7 @@ build:	local_assets
 
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	for file in lib.tar.gz include.tar.gz uImage* config* vmlinuz* build.txt; do \
+	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
 	  s3cmd put --acl-public $$file $(S3_TARGET); \
 	done
 
