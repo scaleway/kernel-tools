@@ -105,12 +105,10 @@ build:	local_assets
 
 
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/lib.tar.gz $(S3_TARGET)
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/include.tar.gz $(S3_TARGET)
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/uImage* $(S3_TARGET)
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/config* $(S3_TARGET)
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/vmlinuz* $(S3_TARGET)
-	s3cmd put --acl-public dist/$(KERNEL_FULL)/build.txt $(S3_TARGET)
+	cd dist/$(KERNEL_FULL) && \
+	for file in lib.tar.gz include.tar.gz uImage* config* vmlinuz* build.txt; do \
+	  s3cmd put --acl-public $$file $(S3_TARGET); \
+	done
 
 
 dist/$(KERNEL_FULL)/lib.tar.gz: dist/$(KERNEL_FULL)/lib
