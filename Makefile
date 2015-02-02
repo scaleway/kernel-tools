@@ -151,7 +151,7 @@ fclean:	clean
 	rm -rf dist ccache
 
 
-local_assets: $(KERNEL)/.config $(KERNEL)/patch.sh dist/$(KERNEL_FULL)/ ccache
+local_assets: $(KERNEL)/.config $(KERNEL)/patch.sh dist/$(KERNEL_FULL) ccache
 
 
 $(KERNEL)/patch.sh:
