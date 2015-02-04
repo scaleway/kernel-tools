@@ -6,7 +6,7 @@ KERNELS ?=		$(wildcard 3.*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
-DOCKER_BUILDER ?=	moul/kernel-builder:$(KERNEL_VERSION)-cross-armhf
+DOCKER_BUILDER ?=	moul/kernel-builder:stable-cross-armhf
 ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
@@ -24,26 +24,27 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dtbs/onlinelabs-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-c1.dts
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
-ENTER_COMMAND ?=	true
+ENTER_COMMAND ?=	/bin/sh -c 'git fetch --tags && git checkout v$(KERNEL_VERSION) && git log HEAD^..HEAD'
 
 
 all:	build
 
 
 info:
-	@echo ARCH_CONFIG=$(ARCH_CONFIG)
-	@echo CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
-	@echo DOCKER_ENV=$(DOCKER_ENV)
-	@echo DOCKER_RUN_OPTS=$(DOCKER_RUN_OPTS)
-	@echo DOCKER_VOLUMES=$(DOCKER_VOLUMES)
-	@echo KERNEL=$(KERNEL)
-	@echo KERNEL_FLAVOR=$(KERNEL_FLAVOR)
-	@echo KERNEL_FULL=$(KERNEL_FULL)
-	@echo KERNEL_TYPE=$(KERNEL_TYPE)
-	@echo KERNEL_VERSION=$(KERNEL_VERSION)
-	@echo LINUX_PATH=$(LINUX_PATH)
-	@echo DOCKER_BUILDER=$(DOCKER_BUILDER)
-	@echo S3_TARGET=$(S3_TARGET)
+	@echo ARCH_CONFIG="$(ARCH_CONFIG)"
+	@echo CONCURRENCY_LEVEL="$(CONCURRENCY_LEVEL)"
+	@echo DOCKER_ENV="$(DOCKER_ENV)"
+	@echo DOCKER_RUN_OPTS="$(DOCKER_RUN_OPTS)"
+	@echo DOCKER_VOLUMES="$(DOCKER_VOLUMES)"
+	@echo KERNEL="$(KERNEL)"
+	@echo KERNEL_FLAVOR="$(KERNEL_FLAVOR)"
+	@echo KERNEL_FULL="$(KERNEL_FULL)"
+	@echo KERNEL_TYPE="$(KERNEL_TYPE)"
+	@echo KERNEL_VERSION="$(KERNEL_VERSION)"
+	@echo LINUX_PATH="$(LINUX_PATH)"
+	@echo DOCKER_BUILDER="$(DOCKER_BUILDER)"
+	@echo ENTER_COMMAND="$(ENTER_COMMAND)"
+	@echo S3_TARGET="$(S3_TARGET)"
 
 
 shell:	local_assets
