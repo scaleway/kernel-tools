@@ -71,6 +71,7 @@ defconfig:	$(ARCH_CONFIG)_defconfig
 
 
 build:	local_assets
+	test -s $(KERNEL)/.config
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
@@ -154,15 +155,17 @@ fclean:	clean
 local_assets: $(KERNEL)/.config $(KERNEL)/patch.sh dist/$(KERNEL_FULL) ccache
 
 
-$(KERNEL)/patch.sh:
-	mkdir -p $(KERNEL)
+$(KERNEL)/patch.sh: $(KERNEL)
 	touch $(KERNEL)/patch.sh
 	chmod +x $(KERNEL)/patch.sh
 
 
-$(KERNEL)/.config:
-	mkdir -p $(KERNEL)
+$(KERNEL)/.config: $(KERNEL)
 	touch $(KERNEL)/.config
+
+
+$(KERNEL):
+	mkdir -p $(KERNEL)
 
 
 dist/$(KERNEL_FULL) ccache:
