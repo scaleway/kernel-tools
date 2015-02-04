@@ -20,6 +20,7 @@ env:
 - _KERNEL=3.18-aufs
 - _KERNEL=3.18-std
 - _KERNEL=3.18-xen
+- _KERNEL=3.18.4-std
 - _KERNEL=3.18.5-std
 - _KERNEL=3.2.34-cesa
 - _KERNEL=3.2.34-std
