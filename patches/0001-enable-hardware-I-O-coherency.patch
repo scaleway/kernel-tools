@@ -1,0 +1,32 @@
+From 8506fd73a9209560c7ee88aa7746ea55d3ebba1f Mon Sep 17 00:00:00 2001
+From: Manfred Touron <m@42.am>
+Date: Thu, 5 Feb 2015 17:54:52 +0000
+Subject: [PATCH] enable hardware I/O coherency
+
+---
+ arch/arm/mach-mvebu/coherency.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-mvebu/coherency.c b/arch/arm/mach-mvebu/coherency.c
+index 1163a3e..b89ff27 100644
+--- a/arch/arm/mach-mvebu/coherency.c
++++ b/arch/arm/mach-mvebu/coherency.c
+@@ -399,13 +399,11 @@ static int coherency_type(void)
+ }
+ 
+ /*
+- * As a precaution, we currently completely disable hardware I/O
+- * coherency, until enough testing is done with automatic I/O
+- * synchronization barriers to validate that it is a proper solution.
++ * Re-enabling hardware I/O coherency.
+  */
+ int coherency_available(void)
+ {
+-	return false;
++	return true;
+ }
+ 
+ int __init coherency_init(void)
+-- 
+2.1.4
+
