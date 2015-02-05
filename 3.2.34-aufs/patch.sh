@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-patch -p1 < patches/aufs-aufs3-debian-3.2/*.patch
+for file in patches/aufs-aufs3-debian-3.2/*
+do
+    patch -p1 < $file
+done
+
