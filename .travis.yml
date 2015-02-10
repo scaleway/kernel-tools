@@ -10,6 +10,7 @@ env:
 - _KERNEL=3.18.4-aufs
 - _KERNEL=3.18.6-std
 - _KERNEL=3.2.34-std
+- _KERNEL=3.19-std
 
 
 install:
