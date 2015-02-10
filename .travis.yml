@@ -25,7 +25,7 @@ env:
 - _KERNEL=3.2.34-cesa
 - _KERNEL=3.2.34-std
 - _KERNEL=3.2.58-std
-- _KERNEL=3.19-std
+- _KERNEL=3.19-android
 
 
 install:
