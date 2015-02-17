@@ -1,0 +1,13 @@
+diff --git a/arch/arm/mach-mvebu/coherency.c b/arch/arm/mach-mvebu/coherency.c
+index c31f4c0..252d86a 100644
+--- a/arch/arm/mach-mvebu/coherency.c
++++ b/arch/arm/mach-mvebu/coherency.c
+@@ -400,7 +400,7 @@ static int coherency_type(void)
+ 
+ int coherency_available(void)
+ {
+-	return coherency_type() != COHERENCY_FABRIC_TYPE_NONE;
++	return false;
+ }
+ 
+ int __init coherency_init(void)
