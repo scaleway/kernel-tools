@@ -9,6 +9,7 @@ env:
 - _KERNEL=3.17.8-std
 - _KERNEL=3.18.7-aufs
 - _KERNEL=3.18.7-std
+- _KERNEL=3.18.7-fedora
 - _KERNEL=3.2.34-std
 - _KERNEL=3.19-std
 
