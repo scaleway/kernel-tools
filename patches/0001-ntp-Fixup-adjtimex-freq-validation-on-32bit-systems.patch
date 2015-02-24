@@ -1,0 +1,46 @@
+From 1079a4c2288cf33c13d2c6ca3e07d4039b1f39f0 Mon Sep 17 00:00:00 2001
+From: John Stultz <john.stultz@linaro.org>
+Date: Mon, 2 Feb 2015 10:57:56 -0800
+Subject: [PATCH] ntp: Fixup adjtimex freq validation on 32bit systems
+
+Additional validation of adjtimex freq values to avoid
+potential multiplication overflows were added in commit
+5e5aeb4367b (time: adjtimex: Validate the ADJ_FREQUENCY values)
+
+Unfortunately the patch used LONG_MAX/MIN instead of
+LLONG_MAX/MIN, which was fine on 64bit systems, but caused
+false positives on 32bit systems resulting in most direct
+frequency adjustments to fail w/ EINVAL.
+
+ntpd only does driect frequency adjustments at startup,
+so the issue was not easily observed there, but other sync
+applications like ptpd and chrony were more effected by
+the bug.
+
+Cc: Sasha Levin <sasha.levin@oracle.com>
+Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
+Reported-by: George Joseph <george.joseph@fairview5.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ kernel/time/ntp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 28bf91c..242774d 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -634,9 +634,9 @@ int ntp_validate_timex(struct timex *txc)
+ 		return -EPERM;
+ 
+ 	if (txc->modes & ADJ_FREQUENCY) {
+-		if (LONG_MIN / PPM_SCALE > txc->freq)
++		if (LLONG_MIN / PPM_SCALE > txc->freq)
+ 			return -EINVAL;
+-		if (LONG_MAX / PPM_SCALE < txc->freq)
++		if (LLONG_MAX / PPM_SCALE < txc->freq)
+ 			return -EINVAL;
+ 	}
+ 
+-- 
+1.9.1
+
