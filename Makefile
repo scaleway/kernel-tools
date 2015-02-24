@@ -47,7 +47,7 @@ info:
 	@echo S3_TARGET="$(S3_TARGET)"
 
 
-shell:	local_assets
+shell::	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
@@ -57,7 +57,7 @@ shell:	local_assets
 		'
 
 
-oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:	local_assets
+oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig::	local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
@@ -71,7 +71,7 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:	local_assets
 defconfig:	$(ARCH_CONFIG)_defconfig
 
 
-build:	local_assets
+build::	local_assets
 	test -s $(KERNEL)/.config
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
@@ -126,7 +126,7 @@ ccache_stats:
 		ccache -s
 
 
-diff:
+diff::
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
