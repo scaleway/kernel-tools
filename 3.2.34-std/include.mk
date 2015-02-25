@@ -1,6 +1,6 @@
 KERNEL_TYPE ?=		lsp
 DOCKER_BUILDER ?=	moul/kernel-builder:local-cross-armhf
-ENTER_COMMAND ?=	git branch && git clean -fxd && git reset --hard HEAD && git checkout lsp-v$(KERNEL_VERSION) && git log HEAD^..HEAD
+ENTER_COMMAND ?=	git branch && git checkout -q lsp-v$(KERNEL_VERSION) && git checkout . && git status && git log HEAD^..HEAD
 
 
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig shell build diff::	$(KERNEL)/linux-marvell
@@ -8,4 +8,8 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig shell build diff::	$(
 
 
 $(KERNEL)/linux-marvell:
-	echo "You need to put the closed-source marvell's kernel git here (a symbolic link works)"
+	@echo "***"
+	@echo "You need to put the closed-source marvell's kernel git here (a symbolic link works)"
+	@echo "***"
+	@echo
+	@exit 1
