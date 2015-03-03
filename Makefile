@@ -24,7 +24,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dtbs/onlinelabs-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-c1.dts
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
-ENTER_COMMAND ?=	git fetch --tags && git checkout v$(KERNEL_VERSION) && git log HEAD^..HEAD
+ENTER_COMMAND ?=	(git show-ref --tags | egrep -q "refs/tags/v$(KERNEL_VERSION)$$" || git fetch --tags) && git checkout v$(KERNEL_VERSION) && git log HEAD^..HEAD
 
 
 all:	build
