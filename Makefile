@@ -91,6 +91,7 @@ build::	local_assets
 			( wget http://ftp.fr.debian.org/debian/pool/main/d/device-tree-compiler/device-tree-compiler_1.4.0+dfsg-1_amd64.deb -O /tmp/dtc.deb && \
 			  dpkg -i /tmp/dtc.deb && \
 			  sed -i s/armada-xp-db.dtb/onlinelabs-c1.dtb/g arch/arm/boot/dts/Makefile && \
+			  git update-index --assume-unchanged arch/arm/boot/dts/Makefile && \
 			  make dtbs && \
 			  cp arch/arm/boot/dts/onlinelabs-c1.dtb build/ && \
 			  cat arch/arm/boot/zImage arch/arm/boot/dts/onlinelabs-c1.dtb > build/zImage-dts-appended-`cat include/config/kernel.release` && \
