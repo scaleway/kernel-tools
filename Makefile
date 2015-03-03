@@ -121,6 +121,9 @@ dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
 	tar -C dist/$(KERNEL_FULL) -cvzf $@ include
 
 
+dist/$(KERNEL_FULL)/lib dist/$(KERNEL_FULL)/include:	build
+
+
 ccache_stats:
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		ccache -s
