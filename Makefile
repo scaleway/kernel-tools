@@ -20,7 +20,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
 			-v $(PWD)/ccache:/ccache \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches \
-			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patch.sh \
+			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patches-apply.sh \
 			-v $(PWD)/dtbs/onlinelabs-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-c1.dts
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
@@ -62,7 +62,7 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig::	local_assets
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
 			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			if [ -f patches-apply.sh ]; then /bin/bash -xe patches-apply.sh; fi && \
 			make $@ && \
 			cp .config /tmp/.config \
 		'
@@ -77,7 +77,8 @@ build::	local_assets
 		/bin/bash -xec ' \
 			$(ENTER_COMMAND) && \
 			cp /tmp/.config .config && \
-			if [ -f patch.sh ]; then /bin/bash -xe patch.sh; fi && \
+			(printf "\narch/arm/boot/dts/*.dts\nbuild/\n" >> .git/info/exclude || true) && \
+			if [ -f patches-apply.sh ]; then /bin/bash -xe patches-apply.sh; fi && \
 			make $(J) uImage && \
 			make $(J) modules && \
 			make headers_install INSTALL_HDR_PATH=build && \
@@ -160,19 +161,15 @@ local_assets: $(KERNEL)/.config $(KERNEL)/patch.sh dist/$(KERNEL_FULL) ccache
 
 
 $(KERNEL)/patch.sh: $(KERNEL)
-	touch $(KERNEL)/patch.sh
-	chmod +x $(KERNEL)/patch.sh
+	touch $@
+	chmod +x $@
 
 
 $(KERNEL)/.config: $(KERNEL)
 	touch $(KERNEL)/.config
 
 
-$(KERNEL):
-	mkdir -p $(KERNEL)
-
-
-dist/$(KERNEL_FULL) ccache:
+dist/$(KERNEL_FULL) ccache $(KERNEL):
 	mkdir -p $@
 
 
