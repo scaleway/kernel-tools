@@ -13,7 +13,8 @@ J ?=			-j $(CONCURRENCY_LEVEL)
 S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
-			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL)
+			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL) \
+			-e LOCALVERSION_AUTO=no
 
 LINUX_PATH=/usr/src/linux
 DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
