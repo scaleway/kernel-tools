@@ -97,7 +97,7 @@ build::	local_assets
 			  cat arch/arm/boot/zImage arch/arm/boot/dts/onlinelabs-c1.dtb > build/zImage-dts-appended-`cat include/config/kernel.release` && \
 			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat include/config/kernel.release`" -d build/zImage-dts-appended-`cat include/config/kernel.release` uImage-dts-appended && \
 			  mv uImage-dts-appended build/uImage-dts-appended-`cat include/config/kernel.release` \
-			) ; \
+			) && \
 			( echo "=== $(KERNEL_FULL) - built on `date`" && \
 			  echo "=== gcc version" && \
 			  gcc --version && \
