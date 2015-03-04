@@ -103,8 +103,12 @@ build::	local_assets
 			  ln -sf zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
 			  cat arch/arm/boot/zImage arch/arm/boot/dts/onlinelabs-pbox.dtb > build/zImage-pbox-dts-appended-`cat build/kernel.release` && \
 			  ln -sf zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
-			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-dts-appended-`cat build/kernel.release` uImage-dts-appended && \
-			  mv uImage-dts-appended build/uImage-dts-appended-`cat build/kernel.release` \
+			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-pbox-dts-appended-`cat build/kernel.release` uImage-pbox-dts-appended && \
+			  mv uImage-pbox-dts-appended build/uImage-pbox-dts-appended-`cat build/kernel.release` && \
+			  ln -sf build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
+			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-c1-dts-appended-`cat build/kernel.release` uImage-c1-dts-appended && \
+			  mv uImage-c1-dts-appended build/uImage-c1-dts-appended-`cat build/kernel.release` && \
+			  ln -sf build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
 			) && \
 			( echo "=== $(KERNEL_FULL) - built on `date`" && \
 			  echo "=== gcc version" && \
@@ -134,8 +138,12 @@ dtbs::	local_assets
 			  ln -sf zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
 			  cat build/zImage build/onlinelabs-pbox.dtb > build/zImage-pbox-dts-appended-`cat build/kernel.release` && \
 			  ln -sf zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
-			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-dts-appended-`cat build/kernel.release` uImage-dts-appended && \
-			  mv uImage-dts-appended build/uImage-dts-appended-`cat build/kernel.release` \
+			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-pbox-dts-appended-`cat build/kernel.release` uImage-pbox-dts-appended && \
+			  mv uImage-pbox-dts-appended build/uImage-pbox-dts-appended-`cat build/kernel.release` && \
+			  ln -sf build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
+			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-c1-dts-appended-`cat build/kernel.release` uImage-c1-dts-appended && \
+			  mv uImage-c1-dts-appended build/uImage-c1-dts-appended-`cat build/kernel.release` && \
+			  ln -sf build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
 			) \
 		'
 
@@ -155,7 +163,7 @@ dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
 	tar -C dist/$(KERNEL_FULL) -cvzf $@ include
 
 
-dist/$(KERNEL_FULL)/lib dist/$(KERNEL_FULL)/include:	build
+# dist/$(KERNEL_FULL)/lib dist/$(KERNEL_FULL)/include:	build
 
 
 ccache_stats:
@@ -206,7 +214,7 @@ dist/$(KERNEL_FULL) ccache $(KERNEL):
 	mkdir -p $@
 
 
-.PHONY:	all build run menuconfig build clean fclean ccache_stats
+.PHONY:	all build run menuconfig clean fclean ccache_stats
 
 
 ## Travis
