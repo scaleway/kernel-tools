@@ -7,7 +7,7 @@ index c31f4c0..252d86a 100644
  int coherency_available(void)
  {
 -	return coherency_type() != COHERENCY_FABRIC_TYPE_NONE;
-+	return false;
++	return true;
  }
  
  int __init coherency_init(void)
