@@ -88,11 +88,11 @@ build::	local_assets
 			make uinstall INSTALL_PATH=build && \
 			cp include/config/kernel.release build/kernel.release && \
 			cp arch/arm/boot/uImage build/uImage-`cat include/config/kernel.release` && \
-			ln -sf uImage-`cat include/config/kernel.release` build/uImage && \
+			cp -f build/uImage-`cat include/config/kernel.release` build/uImage && \
 			cp arch/arm/boot/Image build/Image-`cat include/config/kernel.release` && \
-			ln -sf Image-`cat include/config/kernel.release` build/Image && \
+			cp -f build/Image-`cat include/config/kernel.release` build/Image && \
 			cp arch/arm/boot/zImage build/zImage-`cat include/config/kernel.release` && \
-			ln -sf zImage-`cat include/config/kernel.release` build/zImage && \
+			cp -f build/zImage-`cat include/config/kernel.release` build/zImage && \
 			( wget http://ftp.fr.debian.org/debian/pool/main/d/device-tree-compiler/device-tree-compiler_1.4.0+dfsg-1_amd64.deb -O /tmp/dtc.deb && \
 			  dpkg -i /tmp/dtc.deb && \
 			  sed -i "s/armada-xp-db.dtb/onlinelabs-c1.dtb\ onlinelabs-pbox.dtb/g" arch/arm/boot/dts/Makefile && \
@@ -100,15 +100,15 @@ build::	local_assets
 			  make dtbs && \
 			  cp arch/arm/boot/dts/onlinelabs-*.dtb build/ && \
 			  cat arch/arm/boot/zImage arch/arm/boot/dts/onlinelabs-c1.dtb > build/zImage-c1-dts-appended-`cat build/kernel.release` && \
-			  ln -sf zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
+			  cp -f build/zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
 			  cat arch/arm/boot/zImage arch/arm/boot/dts/onlinelabs-pbox.dtb > build/zImage-pbox-dts-appended-`cat build/kernel.release` && \
-			  ln -sf zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
+			  cp -f build/zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
 			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-pbox-dts-appended-`cat build/kernel.release` uImage-pbox-dts-appended && \
 			  mv uImage-pbox-dts-appended build/uImage-pbox-dts-appended-`cat build/kernel.release` && \
-			  ln -sf build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
+			  cp -f build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
 			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-c1-dts-appended-`cat build/kernel.release` uImage-c1-dts-appended && \
 			  mv uImage-c1-dts-appended build/uImage-c1-dts-appended-`cat build/kernel.release` && \
-			  ln -sf build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
+			  cp -f build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
 			) && \
 			( echo "=== $(KERNEL_FULL) - built on `date`" && \
 			  echo "=== gcc version" && \
@@ -135,15 +135,15 @@ dtbs::	local_assets
 			  make dtbs && \
 			  cp arch/arm/boot/dts/onlinelabs-*.dtb build/ && \
 			  cat build/zImage build/onlinelabs-c1.dtb > build/zImage-c1-dts-appended-`cat build/kernel.release` && \
-			  ln -sf zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
+			  cp -f build/zImage-c1-dts-appended-`cat build/kernel.release` build/zImage-c1-dts-appended && \
 			  cat build/zImage build/onlinelabs-pbox.dtb > build/zImage-pbox-dts-appended-`cat build/kernel.release` && \
-			  ln -sf zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
+			  cp -f build/zImage-pbox-dts-appended-`cat build/kernel.release` build/zImage-pbox-dts-appended && \
 			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-pbox-dts-appended-`cat build/kernel.release` uImage-pbox-dts-appended && \
 			  mv uImage-pbox-dts-appended build/uImage-pbox-dts-appended-`cat build/kernel.release` && \
-			  ln -sf build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
+			  cp -f build/uImage-pbox-dts-appended-`cat build/kernel.release` build/uImage-pbox-dts-appended && \
 			  mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-`cat build/kernel.release`" -d build/zImage-c1-dts-appended-`cat build/kernel.release` uImage-c1-dts-appended && \
 			  mv uImage-c1-dts-appended build/uImage-c1-dts-appended-`cat build/kernel.release` && \
-			  ln -sf build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
+			  cp -f build/uImage-c1-dts-appended-`cat build/kernel.release` build/uImage-c1-dts-appended \
 			) \
 		'
 
