@@ -13,7 +13,8 @@ env:
 - _KERNEL=3.19-pbox
 - _KERNEL=3.19-std
 - _KERNEL=3.2.34-std
-- _KERNEL=4.0-rc1-std
+- _KERNEL=4.0-rc2-std
+- _KERNEL=4.0-rc2-fedora
 
 
 install:
