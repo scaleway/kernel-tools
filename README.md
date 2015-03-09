@@ -21,7 +21,7 @@ Name              | Maintainer      | Sources | Target | Links
 ------------------|-----------------|---------|--------|-------
 3.17.8            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.17.8/)
 3.18.8            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18.8/)
-3.19              | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/?id=v3.19)
+3.19.1            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.1/)
 4.0-rc2           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/?id=v4.0-rc2)
 3.2.34-std        | Marvell         | Closed  | C1     | n/a
 
