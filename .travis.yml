@@ -13,6 +13,7 @@ env:
 - _KERNEL=3.19.1-pbox
 - _KERNEL=3.19.1-std
 - _KERNEL=3.2.34-std
+- _KERNEL=3.2.34-nas
 - _KERNEL=4.0-rc3-std
 - _KERNEL=4.0-rc3-fedora
 
