@@ -36,24 +36,12 @@ cat $GIT/aufs3-{base,kbuild,loopback,mmap,standalone}.patch | patch -p1
 #rm -rf $GIT
 
 # Enable module
-cat <<EOF  >> .config
-CONFIG_AUFS_BDEV_LOOP=y
-CONFIG_AUFS_BRANCH_MAX_1023=y
-CONFIG_AUFS_FHSM=y
-CONFIG_AUFS_FS=m
-CONFIG_AUFS_RDU=y
-CONFIG_AUFS_SBILIST=y
-CONFIG_AUFS_XATTR=y
-# CONFIG_AUFS_BRANCH_MAX_127 is not set
-# CONFIG_AUFS_BRANCH_MAX_32767 is not set
-# CONFIG_AUFS_BRANCH_MAX_511 is not set
-# CONFIG_AUFS_BR_FUSE is not set
-# CONFIG_AUFS_BR_HFSPLUS is not set
-# CONFIG_AUFS_BR_RAMFS is not set
-# CONFIG_AUFS_DEBUG is not set
-# CONFIG_AUFS_EXPORT is not set
-# CONFIG_AUFS_HNOTIFY is not set
-# CONFIG_AUFS_SHWH is not set
-EOF
+grep -q CONFIG_AUFS_BDEV_LOOP .config || echo CONFIG_AUFS_BDEV_LOOP=y >> .config
+grep -q CONFIG_AUFS_BRANCH_MAX_1023 .config || echo CONFIG_AUFS_BRANCH_MAX_1023=y >> .config
+grep -q CONFIG_AUFS_FHSM .config || echo CONFIG_AUFS_FHSM=y >> .config
+grep -q CONFIG_AUFS_FS .config || echo CONFIG_AUFS_FS=m >> .config
+grep -q CONFIG_AUFS_RDU .config || echo CONFIG_AUFS_RDU=y >> .config
+grep -q CONFIG_AUFS_SBILIST .config || echo CONFIG_AUFS_SBILIST=y >> .config
+grep -q CONFIG_AUFS_XATTR .config || echo CONFIG_AUFS_XATTR=y >> .config
 
 printf "Patched Kernel $KVER in $(cwd) with AUFS support!"
