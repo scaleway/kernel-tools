@@ -6,14 +6,14 @@ sudo: false
 
 env:
 - TRAVIS_GLOBAL_WTF=1 # See https://github.com/docker/swarm/blob/master/.travis.yml
-- _KERNEL=3.18.9-fedora
+- _KERNEL=3.19.1-aufs
+- _KERNEL=3.19.1-fedora
 - _KERNEL=3.19.1-pbox
 - _KERNEL=3.19.1-std
-- _KERNEL=3.19.1-aufs
-- _KERNEL=3.2.34-std
 - _KERNEL=3.2.34-san
-- _KERNEL=4.0-rc3-std
+- _KERNEL=3.2.34-std
 - _KERNEL=4.0-rc3-fedora
+- _KERNEL=4.0-rc3-std
 
 
 install:
