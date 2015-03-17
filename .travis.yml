@@ -12,8 +12,8 @@ env:
 - _KERNEL=3.19.1-std
 - _KERNEL=3.2.34-san
 - _KERNEL=3.2.34-std
-- _KERNEL=4.0-rc3-fedora
-- _KERNEL=4.0-rc3-std
+- _KERNEL=4.0-rc4-fedora
+- _KERNEL=4.0-rc4-std
 
 
 install:
