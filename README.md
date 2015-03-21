@@ -40,6 +40,10 @@ Create a new `3.10-new/.config` file from scratch for kernel `3.10`
 
     make defconfig KERNEL=3.10-new
 
+Make oldconfig a `3.18-std` kernel
+
+    make oldconfig KERNEL=3.18-std
+
 Run a shell in the container for easy debugging and run custom commands
 
     make shell KERNEL=3.17-std
