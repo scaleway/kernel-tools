@@ -2,7 +2,7 @@
  * Device Tree file for Online-Labs C1 Computing
  *
  * Copyright (C) 2012-2014 Marvell
- * Copyright (C) 2014-2015 Online Labs
+ * Copyright (C) 2014-2015 Scaleway
  *
  * Lior Amsalem <alior@marvell.com>
  * Gregory CLEMENT <gregory.clement@free-electrons.com>
@@ -19,7 +19,7 @@
 #include "armada-xp-mv78460.dtsi"
 
 / {
-	model = "Online Labs - C1 Computing";
+	model = "Scaleway - C1 Computing";
 	compatible = "marvell,axp-db", "marvell,armadaxp-mv78460", "marvell,armadaxp", "marvell,armada-370-xp";
 
 	chosen {
