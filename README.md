@@ -1,4 +1,4 @@
-Kernel Config [![Build Status](https://travis-ci.org/online-labs/kernel-config.svg?branch=master)](https://travis-ci.org/online-labs/kernel-config)
+Kernel Config [![Build Status](https://travis-ci.org/scaleway/kernel-tools.svg?branch=master)](https://travis-ci.org/scaleway/kernel-tools)
 =============
 
 https://community.cloud.online.net/t/official-linux-kernel-new-modules-optimizations-hacks/226
@@ -100,7 +100,7 @@ make ARCH=arm mvebu_v7_defconfig
 ```
   or by fetching our one
   ```
-wget -O .config https://raw.githubusercontent.com/online-labs/kernel-config/master/.config-$VERSION-std
+wget -O .config https://raw.githubusercontent.com/scaleway/kernel-tools/master/$VERSION/.config
 ```
 
 - Tune the .config
@@ -154,4 +154,4 @@ Minimal configuration for C1 servers
 Licensing
 =========
 
-© 2014-2015 Online Labs - [MIT License](https://github.com/online-labs/kernel-config/blob/master/LICENSE).
+© 2014-2015 Scaleway - [MIT License](https://github.com/scaleway/kernel-tools/blob/master/LICENSE).
