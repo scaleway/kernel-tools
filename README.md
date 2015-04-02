@@ -21,7 +21,7 @@ Name              | Maintainer      | Sources | Target | Links
 ------------------|-----------------|---------|--------|-------
 3.19.3            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.3/)
 3.2.34            | Marvell         | Closed  | C1     | n/a
-4.0-rc6           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/?id=v4.0-rc6)
+4.0-rc5           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/?id=v4.0-rc5)
 
 ---
 
