@@ -1,8 +1,8 @@
-KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard 3*/.latest)))
+KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard [34]*/.latest)))
 -include $(KERNEL)/include.mk
 
 # Default variables
-KERNELS ?=		$(wildcard 3.*)
+KERNELS ?=		$(wildcard [34].*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
