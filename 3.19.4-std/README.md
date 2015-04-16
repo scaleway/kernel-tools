@@ -2,6 +2,7 @@
 
 Latest 3.x kernel with standard configuration
 
+# Changelog
 
 ## 3.19.4-202-std (2015-04-13)
 
@@ -27,7 +28,7 @@ Latest 3.x kernel with standard configuration
 
 ## 3.19-156-std (2015-02-10)
 
-* Bump to Linux 3.19 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.19))
+* Bump to Linux 3.19 ([browse](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/log/?id=refs/tags/v3.19)
 * Enable hardware I/O coherency ([#31](https://github.com/scaleway/kernel-tools/issues/31))
 
 
@@ -39,7 +40,7 @@ Latest 3.x kernel with standard configuration
 * Bump to Linux 3.18.3 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.18.3))
 * Remove CONFIG_MV_XOR ([#25](https://github.com/scaleway/kernel-tools/issues/25))
 * Bump to Linux 3.18.2 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.18.2))
-* Bump to Linux 3.18 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.18))
+* Bump to Linux 3.18 ([browse](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/log/?id=refs/tags/v3.18)
 
 
 ## 3.18-rc1-94-std (2014-10-20)
@@ -52,4 +53,4 @@ Latest 3.x kernel with standard configuration
 
 ## 3.17.0-85 (2014-10-15)
 
-* Bump to Linux 3.17.0 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.17.0))
+* Bump to Linux 3.17 ([browse](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/log/?id=refs/tags/v3.17)
