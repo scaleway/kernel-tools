@@ -13,6 +13,7 @@ env:
 - _KERNEL=3.2.34-std
 - _KERNEL=4.0-fedora
 - _KERNEL=4.0-std
+- _KERNEL=4.0-xen
 
 
 install:
