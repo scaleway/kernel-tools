@@ -20,7 +20,7 @@ Kernels
 Name              | Maintainer      | Sources | Target | Links
 ------------------|-----------------|---------|--------|-------
 3.18.12           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18.12)
-3.19.4            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.4)
+3.19.5            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.5)
 3.2.34            | Marvell         | Closed  | C1     | n/a
 4.0               | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.0)
 
