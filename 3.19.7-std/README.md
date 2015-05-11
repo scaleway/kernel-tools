@@ -4,6 +4,10 @@ Latest 3.x kernel with standard configuration
 
 # Changelog
 
+## 3.19.7-xxx-std (2015-05-11)
+
+* Bump to Linux 3.19.7 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.19.7))
+
 ## 3.19.6-xxx-std (2015-05-05)
 
 * Bump to Linux 3.19.6 ([changelog](https://kernel.org/pub/linux/kernel/v3.x/ChangeLog-3.19.6))
