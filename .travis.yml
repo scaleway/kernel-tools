@@ -12,9 +12,9 @@ env:
 - _KERNEL=3.19.6-std
 - _KERNEL=3.2.34-san
 - _KERNEL=3.2.34-std
-- _KERNEL=4.0.1-fedora
-- _KERNEL=4.0.1-std
-- _KERNEL=4.0.1-xen
+- _KERNEL=4.0.2-fedora
+- _KERNEL=4.0.2-std
+- _KERNEL=4.0.2-xen
 
 
 install:
