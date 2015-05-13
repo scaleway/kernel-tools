@@ -70,7 +70,9 @@ uImage: apply-patches
 	make $(J) uImage
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
+	cd build/ && tar cf include.tar include
 	make modules_install INSTALL_MOD_PATH=build
+	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
 	cp include/config/kernel.release build/kernel.release
 	cp arch/arm/boot/uImage build/uImage-$(KERNEL_VERSION)
