@@ -1,4 +1,4 @@
-KERNEL_VERSION :=	cat build/kernel.release
+KERNEL_VERSION :=	$(shell cat build/kernel.release)
 ARCH_CONFIG ?=		mvebu_v7
 J ?=			-j $(CONCURRENCY_LEVEL)
 
@@ -32,9 +32,9 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:
 apply-patches:
 	if [ -f patches-apply.sh -a ! -f patches-applied ]; then \
 	  /bin/bash -xe patches-apply.sh; \
-	  touch patches-applied.sh; \
+	  touch patches-applied; \
 	fi
-	(printf "\narch/arm/boot/dts/*.dts\nbuild/\n" >> .git/info/exclude || true)
+	(printf "\narch/arm/boot/dts/*.dts\nbuild\nrules.mk/\n" >> .git/info/exclude || true)
 
 
 build:
