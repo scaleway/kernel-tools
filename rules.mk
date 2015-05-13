@@ -1,13 +1,17 @@
-KERNEL_VERSION :=	$(shell cat build/kernel.release)
+KERNEL_VERSION =	$(shell (test -f include/config/kernel.release || $(MAKE) include/config/kernel.release &>/dev/null); cat include/config/kernel.release)
 ARCH_CONFIG ?=		mvebu_v7
 J ?=			-j $(CONCURRENCY_LEVEL)
+
+
+all:
+	@echo "This Makefile is used inside Docker"
 
 
 .PHONY: all enter leave oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs build ccache_stats shell defconfig uImage diff uImage-appended
 
 
-all:
-	@echo "This Makefile is used inside Docker"
+print-%:
+	@echo $* = $($*)
 
 
 enter:
@@ -30,14 +34,16 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:
 
 
 apply-patches:
-	if [ -f patches-apply.sh -a ! -f patches-applied ]; then \
-	  /bin/bash -xe patches-apply.sh; \
+	@if [ -f patches-apply.sh -a ! -f patches-applied ]; then \
+	  echo /bin/bash -xe patches-apply.sh; \
+	  /bin/bash -xe patches-apply.sh || exit 1; \
+	  printf "\narch/arm/boot/dts/*.dts\nbuild/\nrules.mk\n" >> .git/info/exclude || true; \
 	  touch patches-applied; \
 	fi
-	(printf "\narch/arm/boot/dts/*.dts\nbuild\nrules.mk/\n" >> .git/info/exclude || true)
 
 
 build:
+	-mv build/build.txt build/build-prev.txt
 	$(MAKE) -f rules.mk uImage dtbs build_info 2>&1 | tee build/build.txt
 
 
@@ -83,6 +89,7 @@ build_info:
 	find build -type f -ls
 	@echo "=== sizes"
 	du -sh build/*
+	du -sh build
 
 
 diff:

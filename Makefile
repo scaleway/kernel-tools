@@ -35,6 +35,10 @@ ENTER_COMMAND ?=	(git show-ref --tags | egrep -q "refs/tags/v$(KERNEL_VERSION)$$
 all:	build
 
 
+print-%:
+	@echo $* = $($*)
+
+
 info:
 	@echo ARCH_CONFIG="$(ARCH_CONFIG)"
 	@echo CONCURRENCY_LEVEL="$(CONCURRENCY_LEVEL)"
