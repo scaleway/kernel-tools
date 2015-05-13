@@ -3,6 +3,9 @@ ARCH_CONFIG ?=		mvebu_v7
 J ?=			-j $(CONCURRENCY_LEVEL)
 
 
+.PHONY: all enter leave oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs build ccache_stats shell defconfig uImage diff uImage-appended
+
+
 all:
 	@echo "This Makefile is used inside Docker"
 
@@ -32,6 +35,10 @@ apply-patches:
 	  touch patches-applied.sh; \
 	fi
 	(printf "\narch/arm/boot/dts/*.dts\nbuild/\n" >> .git/info/exclude || true)
+
+
+build:
+	$(MAKE) -f rules.mk uImage dtbs build_info 2>&1 | tee build/build.txt
 
 
 dtbs: /usr/bin/dtc apply-patches

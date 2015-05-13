@@ -52,14 +52,9 @@ info:
 	@echo S3_TARGET="$(S3_TARGET)"
 
 
-oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell:: local_assets
+oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build:: local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
-
-
-build:: dist/$(KERNEL_FULL)
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
-		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" enter uImage dtbs build_info leave 2>&1 | tee $(PWD)/dist/$(KERNEL_FULL)/build.txt
 
 
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
