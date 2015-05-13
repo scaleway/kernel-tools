@@ -30,6 +30,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
 ENTER_COMMAND ?=	(git show-ref --tags | egrep -q "refs/tags/v$(KERNEL_VERSION)$$" || git fetch --tags) && git checkout v$(KERNEL_VERSION) && git log HEAD^..HEAD
+SHELL_EXEC_CMD ?=	make -f rules.mk shell
 
 
 all:	build
@@ -62,7 +63,7 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats
 
 
 shell_exec::
-	docker exec -it `docker ps -f image=$(DOCKER_BUILDER) -f event=start -lq` make -f rules.mk shell
+	docker exec -it `docker ps -f image=$(DOCKER_BUILDER) -f event=start -lq` $(SHELL_EXEC_CMD)
 
 
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
