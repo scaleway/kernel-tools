@@ -20,12 +20,12 @@ LINUX_PATH=/usr/src/linux
 DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
 			-v $(PWD)/ccache:/ccache \
-			-v $(PWD)/patches:$(LINUX_PATH)/patches \
-			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patches-apply.sh \
-			-v $(PWD)/rules.mk:$(LINUX_PATH)/rules.mk \
-			-v $(PWD)/dtbs/scaleway-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1.dts \
-			-v $(PWD)/dtbs/scaleway-c1-xen.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1-xen.dts \
-			-v $(PWD)/dtbs/onlinelabs-pbox.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-pbox.dts
+			-v $(PWD)/patches:$(LINUX_PATH)/patches:rw \
+			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patches-apply.sh:ro \
+			-v $(PWD)/rules.mk:$(LINUX_PATH)/rules.mk:ro \
+			-v $(PWD)/dtbs/scaleway-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1.dts:ro \
+			-v $(PWD)/dtbs/scaleway-c1-xen.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1-xen.dts:ro \
+			-v $(PWD)/dtbs/onlinelabs-pbox.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-pbox.dts:ro
 
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline

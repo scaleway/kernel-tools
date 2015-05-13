@@ -23,7 +23,7 @@ leave:
 	cp .config /tmp/.config
 
 
-oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig:
+oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig: apply-patches
 	$(MAKE) $@
 
 
