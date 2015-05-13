@@ -57,6 +57,10 @@ oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats
 		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
 
 
+shell_exec::
+	docker exec -it `docker ps -f image=$(DOCKER_BUILDER) -f event=start -lq` make -f rules.mk shell
+
+
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
