@@ -49,7 +49,7 @@ build:
 
 dtbs: /usr/bin/dtc apply-patches
 	-printf "\narch/arm/boot/dts/*.dts\nbuild/\n" >> .git/info/exclude || true
-	sed -i "s/armada-xp-db.dtb/scaleway-c1.dtb\ scaleway-c1-xen.dtb\ onlinelabs-pbox.dtb/g" arch/arm/boot/dts/Makefile
+	sed -i "s/armada-xp-db.dtb/scaleway-c1.dtb\ onlinelabs-pbox.dtb/g" arch/arm/boot/dts/Makefile
 	git update-index --assume-unchanged arch/arm/boot/dts/Makefile
 	$(MAKE) dtbs
 	cp arch/arm/boot/dts/onlinelabs-*.dtb arch/arm/boot/dts/scaleway-*.dtb build/
@@ -108,12 +108,6 @@ uImage-appended: apply-patches
 	mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-$(KERNEL_VERSION)" -d build/zImage-pbox-dts-appended-$(KERNEL_VERSION) uImage-pbox-dts-appended
 	mv uImage-pbox-dts-appended build/uImage-pbox-dts-appended-$(KERNEL_VERSION)
 	cp -f build/uImage-pbox-dts-appended-$(KERNEL_VERSION) build/uImage-pbox-dts-appended
-
-	cat build/zImage build/scaleway-c1-xen.dtb > build/zImage-c1-xen-dts-appended-$(KERNEL_VERSION)
-	cp -f build/zImage-c1-xen-dts-appended-$(KERNEL_VERSION) build/zImage-c1-xen-dts-appended
-	mkimage -A arm -O linux -T kernel -C none -a 0x00008000 -e 0x00008000 -n "Linux-$(KERNEL_VERSION)" -d build/zImage-c1-xen-dts-appended-$(KERNEL_VERSION) uImage-c1-xen-dts-appended
-	mv uImage-c1-xen-dts-appended build/uImage-c1-xen-dts-appended-$(KERNEL_VERSION)
-	cp -f build/uImage-c1-xen-dts-appended-$(KERNEL_VERSION) build/uImage-c1-xen-dts-appended
 
 	cat build/zImage build/onlinelabs-pbox.dtb > build/zImage-pbox-dts-appended-$(KERNEL_VERSION)
 	cp -f build/zImage-pbox-dts-appended-$(KERNEL_VERSION) build/zImage-pbox-dts-appended

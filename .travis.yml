@@ -15,7 +15,6 @@ env:
 - _KERNEL=4.0.2-apparmor
 - _KERNEL=4.0.2-fedora
 - _KERNEL=4.0.2-std
-- _KERNEL=4.0.2-xen
 
 
 install:
