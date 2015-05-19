@@ -7,12 +7,12 @@ sudo: false
 env:
 - TRAVIS_GLOBAL_WTF=1 # See https://github.com/docker/swarm/blob/master/.travis.yml
 - _KERNEL=3.18.13-std
-- _KERNEL=3.19.7-docker
 - _KERNEL=3.19.7-pbox
 - _KERNEL=3.19.7-std
 - _KERNEL=3.2.34-san
 - _KERNEL=3.2.34-std
 - _KERNEL=4.0.4-apparmor
+- _KERNEL=4.0.4-docker
 - _KERNEL=4.0.4-fedora
 - _KERNEL=4.0.4-std
 

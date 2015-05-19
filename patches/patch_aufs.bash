@@ -13,11 +13,17 @@ KVER=$VERSION.$PATCHLEVEL
 # Temporary Location
 #TMPGIT=`mktemp -d`
 GIT=patches/aufs-aufs3-standalone
+GIT_URL=git://git.code.sf.net/p/aufs/aufs3-standalone
+
+if [ "x$VERSION" = "x4" ]; then
+    GIT=patches/aufs-aufs4-standalone
+    GIT_URL=git://github.com/sfjro/aufs4-standalone.git
+fi
 
 # Clone AUFS repo
 if [ ! -d $GIT ]; then
     which git || (apt-get update && apt-get install -y git)
-    git clone -n git://git.code.sf.net/p/aufs/aufs3-standalone $GIT
+    git clone -n $GIT_URL $GIT
 fi
 
 # Checkout AUFS branch
