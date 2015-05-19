@@ -1,0 +1,26 @@
+/*
+ * Device Tree file for Online-Labs C1 Computing
+ *
+ * Copyright (C) 2014-2015 Scaleway
+ *
+ * Manfred Touron <mtouron@scaleway.com>
+ * Vincent Auclair <vauclair@online.net>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2.  This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+#include "scaleway-c1.dts"
+
+/ {
+	pmodel = "Scaleway - C1 XEN";
+	compatible = "marvell,axp-db", "marvell,armadaxp-mv78460", "marvell,armadaxp", "marvell,armada-370-xp";
+
+	hypervisor {
+	        compatible = "xen,xen-4.3", "xen,xen";
+		reg = <0 0xb0000000 0 0x20000>;
+		interrupts = <1 15 0xf08>;
+	};
+};
+
