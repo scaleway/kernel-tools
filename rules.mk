@@ -43,7 +43,7 @@ apply-patches:
 
 
 build:
-	-mv build/build.txt build/build-prev.txt
+	@mv build/build.txt build/build-prev.txt || true
 	$(MAKE) -f rules.mk uImage dtbs build_info 2>&1 | tee build/build.txt
 
 
