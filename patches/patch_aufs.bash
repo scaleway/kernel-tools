@@ -14,10 +14,12 @@ KVER=$VERSION.$PATCHLEVEL
 #TMPGIT=`mktemp -d`
 GIT=patches/aufs-aufs3-standalone
 GIT_URL=git://git.code.sf.net/p/aufs/aufs3-standalone
+BINPREFIX=aufs3-
 
 if [ "x$VERSION" = "x4" ]; then
     GIT=patches/aufs-aufs4-standalone
     GIT_URL=git://github.com/sfjro/aufs4-standalone.git
+    BINPREFIX=aufs4-
 fi
 
 # Clone AUFS repo
@@ -36,7 +38,7 @@ cp -r $GIT/{Documentation,fs} ./
 cp $GIT/include/uapi/linux/aufs_type.h ./include/uapi/linux/aufs_type.h
 
 # Apply patches
-cat $GIT/aufs3-{base,kbuild,loopback,mmap,standalone}.patch | patch -p1
+cat $GIT/${BINPREFIX}{base,kbuild,loopback,mmap,standalone}.patch | patch -p1
 
 # Clean Up
 #rm -rf $GIT
