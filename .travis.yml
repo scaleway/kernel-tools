@@ -11,10 +11,10 @@ env:
 - _KERNEL=3.19.8-std
 - _KERNEL=3.2.34-san
 - _KERNEL=3.2.34-std
-- _KERNEL=4.0.4-apparmor
-- _KERNEL=4.0.4-docker
-- _KERNEL=4.0.4-fedora
-- _KERNEL=4.0.4-std
+- _KERNEL=4.0.5-apparmor
+- _KERNEL=4.0.5-docker
+- _KERNEL=4.0.5-fedora
+- _KERNEL=4.0.5-std
 
 
 install:

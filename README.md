@@ -22,7 +22,7 @@ Name              | Maintainer      | Sources | Target | Links
 3.18.14           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18.14)
 3.19.8            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.8)
 3.2.34            | Marvell         | Closed  | C1     | n/a
-4.0.4             | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.0.4)
+4.0.5             | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.0.5)
 
 ---
 
