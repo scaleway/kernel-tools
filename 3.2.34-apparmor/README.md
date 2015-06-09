@@ -4,7 +4,7 @@ Marvell 3.2.x LSP kernel with standard configuration
 
 # Changelog
 
-## 3.2.34-xx-apparmor (xxxx-xx-xx)
+## 3.2.34-31-apparmor (2015-06-09)
 
 * Enabled apparmor support
 
