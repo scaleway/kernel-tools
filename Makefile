@@ -67,6 +67,11 @@ shell_exec::
 	docker exec -it `docker ps -f image=$(DOCKER_BUILDER) -f event=start -lq` $(SHELL_EXEC_CMD)
 
 
+publish_uImage: dist/$(KERNEL_FULL)/uImage
+	s3cmd put --acl-public $< $(S3_TARGET)
+	wget --read-timeout=3 --tries=0 -O - $(shell s3cmd info $(S3_TARGET)uImage | grep URL | awk '{print $$2}') >/dev/null
+
+
 publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
