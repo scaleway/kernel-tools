@@ -11,6 +11,7 @@ ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
+CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL) \
@@ -29,7 +30,7 @@ DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
-ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fetch --tags) && git checkout refs/tags/v$(KERNEL_VERSION) && git log HEAD^..HEAD
+ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fetch --tags) && git checkout $(CHECKOUT_TARGET) && git log HEAD^..HEAD
 SHELL_EXEC_CMD ?=	make -f rules.mk shell
 
 
