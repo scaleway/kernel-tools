@@ -10,10 +10,10 @@ env:
 - _KERNEL=3.19.8-pbox
 - _KERNEL=3.2.34-san
 - _KERNEL=3.2.34-std
-- _KERNEL=4.0.5-apparmor
-- _KERNEL=4.0.5-docker
-- _KERNEL=4.0.5-fedora
-- _KERNEL=4.0.5-std
+- _KERNEL=4.0.7-apparmor
+- _KERNEL=4.0.7-docker
+- _KERNEL=4.0.7-fedora
+- _KERNEL=4.0.7-std
 
 
 install:
