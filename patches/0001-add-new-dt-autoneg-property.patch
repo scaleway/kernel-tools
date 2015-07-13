@@ -1,0 +1,131 @@
+
+
+Currently fixed_phy driver recognizes only the link-up state.
+This simple patch adds an implementation of link-down state.
+The actual change is 1-line, the rest is an indentation.
+
+Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+
+CC: Florian Fainelli <f.fainelli@gmail.com>
+CC: netdev@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/net/phy/fixed_phy.c | 99 +++++++++++++++++++++++----------------------
+ 1 file changed, 50 insertions(+), 49 deletions(-)
+
+diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+index 1960b46..a5d93cf 100644
+--- a/drivers/net/phy/fixed_phy.c
++++ b/drivers/net/phy/fixed_phy.c
+@@ -52,58 +52,59 @@ static int fixed_phy_update_regs(struct fixed_phy *fp)
+ 	u16 lpagb = 0;
+ 	u16 lpa = 0;
+
+-	if (fp->status.duplex) {
+-		bmcr |= BMCR_FULLDPLX;
+-
+-		switch (fp->status.speed) {
+-		case 1000:
+-			bmsr |= BMSR_ESTATEN;
+-			bmcr |= BMCR_SPEED1000;
+-			lpagb |= LPA_1000FULL;
+-			break;
+-		case 100:
+-			bmsr |= BMSR_100FULL;
+-			bmcr |= BMCR_SPEED100;
+-			lpa |= LPA_100FULL;
+-			break;
+-		case 10:
+-			bmsr |= BMSR_10FULL;
+-			lpa |= LPA_10FULL;
+-			break;
+-		default:
+-			pr_warn("fixed phy: unknown speed\n");
+-			return -EINVAL;
+-		}
+-	} else {
+-		switch (fp->status.speed) {
+-		case 1000:
+-			bmsr |= BMSR_ESTATEN;
+-			bmcr |= BMCR_SPEED1000;
+-			lpagb |= LPA_1000HALF;
+-			break;
+-		case 100:
+-			bmsr |= BMSR_100HALF;
+-			bmcr |= BMCR_SPEED100;
+-			lpa |= LPA_100HALF;
+-			break;
+-		case 10:
+-			bmsr |= BMSR_10HALF;
+-			lpa |= LPA_10HALF;
+-			break;
+-		default:
+-			pr_warn("fixed phy: unknown speed\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	if (fp->status.link)
++	if (fp->status.link) {
+ 		bmsr |= BMSR_LSTATUS | BMSR_ANEGCOMPLETE;
+
+-	if (fp->status.pause)
+-		lpa |= LPA_PAUSE_CAP;
++		if (fp->status.duplex) {
++			bmcr |= BMCR_FULLDPLX;
++
++			switch (fp->status.speed) {
++			case 1000:
++				bmsr |= BMSR_ESTATEN;
++				bmcr |= BMCR_SPEED1000;
++				lpagb |= LPA_1000FULL;
++				break;
++			case 100:
++				bmsr |= BMSR_100FULL;
++				bmcr |= BMCR_SPEED100;
++				lpa |= LPA_100FULL;
++				break;
++			case 10:
++				bmsr |= BMSR_10FULL;
++				lpa |= LPA_10FULL;
++				break;
++			default:
++				pr_warn("fixed phy: unknown speed\n");
++				return -EINVAL;
++			}
++		} else {
++			switch (fp->status.speed) {
++			case 1000:
++				bmsr |= BMSR_ESTATEN;
++				bmcr |= BMCR_SPEED1000;
++				lpagb |= LPA_1000HALF;
++				break;
++			case 100:
++				bmsr |= BMSR_100HALF;
++				bmcr |= BMCR_SPEED100;
++				lpa |= LPA_100HALF;
++				break;
++			case 10:
++				bmsr |= BMSR_10HALF;
++				lpa |= LPA_10HALF;
++				break;
++			default:
++				pr_warn("fixed phy: unknown speed\n");
++				return -EINVAL;
++			}
++		}
+
+-	if (fp->status.asym_pause)
+-		lpa |= LPA_PAUSE_ASYM;
++		if (fp->status.pause)
++			lpa |= LPA_PAUSE_CAP;
++
++		if (fp->status.asym_pause)
++			lpa |= LPA_PAUSE_ASYM;
++	}
+
+ 	fp->regs[MII_PHYSID1] = 0;
+ 	fp->regs[MII_PHYSID2] = 0;
+-- 
+1.9.1
+

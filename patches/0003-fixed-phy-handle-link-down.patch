@@ -5,9 +5,9 @@ Unfortunately it appears that some HW that implements SGMII protocol,
 doesn't generate the inband status, so it is not possible to auto-negotiate
 anything with such HW.
 
-This patch enables the auto-negotiation only if the 'link' DT property
-is set to "auto".
-For old configurations where the 'link' property is not specified, the
+This patch enables the auto-negotiation only if the 'autoneg' DT property
+is set to 1.
+For old configurations where the 'autoneg' property is not specified, the
 default is to not use auto-negotiation.
 
 This patch fixes the following regression:
@@ -21,11 +21,11 @@ CC: netdev@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
 CC: stable@vger.kernel.org
 ---
- drivers/net/ethernet/marvell/mvneta.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/marvell/mvneta.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 74176ec..b7f4d7f 100644
+index 74176ec..d4c29a3 100644
 --- a/drivers/net/ethernet/marvell/mvneta.c
 +++ b/drivers/net/ethernet/marvell/mvneta.c
 @@ -3009,7 +3009,7 @@ static int mvneta_probe(struct platform_device *pdev)
@@ -46,14 +46,16 @@ index 74176ec..b7f4d7f 100644
 
  		/* In the case of a fixed PHY, the DT node associated
  		 * to the PHY is the Ethernet MAC DT node.
-@@ -3068,7 +3068,7 @@ static int mvneta_probe(struct platform_device *pdev)
+@@ -3067,8 +3067,7 @@ static int mvneta_probe(struct platform_device *pdev)
+ 	pp = netdev_priv(dev);
  	pp->phy_node = phy_node;
  	pp->phy_interface = phy_mode;
- 	pp->use_inband_status = (phy_mode == PHY_INTERFACE_MODE_SGMII) &&
+-	pp->use_inband_status = (phy_mode == PHY_INTERFACE_MODE_SGMII) &&
 -				fixed_phy;
-+				autoneg_link;
++	pp->use_inband_status = autoneg_link;
 
  	pp->clk = devm_clk_get(&pdev->dev, NULL);
  	if (IS_ERR(pp->clk)) {
 -- 
 1.9.1
+

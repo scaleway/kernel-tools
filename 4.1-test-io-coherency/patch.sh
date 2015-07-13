@@ -1,4 +1,4 @@
-#!/bin/sh
+o#!/bin/sh
 
 #patch -p1 < patches/patch-enable-IO-coherency-4.0.patch
 #git update-index --assume-unchanged arch/arm/mach-mvebu/coherency.c
@@ -6,5 +6,6 @@
 patch -p1 < patches/patch-revert-mvneta-init-nego.patch
 
 # sgmii mvneta
-patch -p1 < patches/0001-of-mdio-add-new-dt-property-link.patch
-patch -p1 < patches/0002-mvneta-use-inband-status-only-when-link-auto.patch
+patch -p1 < patches/0001-add-new-dt-autoneg-property.patch
+patch -p1 < patches/0002-net-enable-inband.patch
+patch -p1 < patches/0003-fixed-phy-handle-link-down.patch

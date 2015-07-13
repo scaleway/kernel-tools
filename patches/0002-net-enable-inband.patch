@@ -1,13 +1,16 @@
 
-Currently for fixed-link the link state is always set to UP.
-This patch introduces the new property 'link' that accepts the
-following string arguments: "up", "down" and "auto".
-"down" may be needed if the link is physically unconnected.
-"auto" is needed to enable the link paramaters auto-negotiation,
-that is built into some MII protocols, namely SGMII.
-The appropriate documentation is added and explicitly states that
-"auto" is very specific (protocol, HW and driver-specific), and
-is therefore should be used with care.
+Currently for fixed-link the MAC driver decides whether to use the
+link status auto-negotiation or not.
+Unfortunately the auto-negotiation may not work when expected by
+the MAC driver. Sebastien Rannou explains:
+<< Yes, I confirm that my HW does not generate an in-band status. AFAIK, it's
+a PHY that aggregates 4xSGMIIs to 1xQSGMII ; the MAC side of the PHY (with
+inband status) is connected to the switch through QSGMII, and in this context
+we are on the media side of the PHY. >>
+https://lkml.org/lkml/2015/7/10/206
+
+This patch introduces the new boolean property 'autoneg' that allows
+the user to request the auto-negotiation explicitly.
 
 Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
 
@@ -22,53 +25,47 @@ CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
 CC: netdev@vger.kernel.org
 ---
- .../devicetree/bindings/net/fixed-link.txt         |  8 +++-
- drivers/of/of_mdio.c                               | 48 ++++++++++++++++++++--
- include/linux/of_mdio.h                            |  5 +++
- 3 files changed, 57 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/net/fixed-link.txt         |  6 +++++-
+ drivers/of/of_mdio.c                               | 23 ++++++++++++++++++++--
+ include/linux/of_mdio.h                            |  5 +++++
+ 3 files changed, 31 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/net/fixed-link.txt b/Documentation/devicetree/bindings/net/fixed-link.txt
-index 82bf7e0..070f554 100644
+index 82bf7e0..e2959a8 100644
 --- a/Documentation/devicetree/bindings/net/fixed-link.txt
 +++ b/Documentation/devicetree/bindings/net/fixed-link.txt
-@@ -9,8 +9,14 @@ Such a fixed link situation is described by creating a 'fixed-link'
+@@ -9,8 +9,12 @@ Such a fixed link situation is described by creating a 'fixed-link'
  sub-node of the Ethernet MAC device node, with the following
  properties:
 
-+* 'link' (string, optional), to indicate the link state. Accepted
-+  values are "up", "down" and "auto". "auto" means auto-negotiation of
-+  link parameters. Auto-negotiation is MII protocol, HW and driver-specific
-+  and is not supported in many cases, so use it only when you know what
-+  you do.
++* 'autoneg' (boolean, optional), to enable the auto-negotiation of link
++  state. Auto-negotiation is MII protocol, HW and driver-specific and is
++  not supported in many cases, so use it only when you know what you do.
  * 'speed' (integer, mandatory), to indicate the link speed. Accepted
 -  values are 10, 100 and 1000
-+  values are 10, 100 and 1000. If the 'link' property is set to 'auto',
++  values are 10, 100 and 1000. If the auto-negotiation is enabled,
 +  'speed' may not be set. It will then be auto-negotiated, if possible.
  * 'full-duplex' (boolean, optional), to indicate that full duplex is
    used. When absent, half duplex is assumed.
  * 'pause' (boolean, optional), to indicate that pause should be
 diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
-index 1bd4305..2152cf8 100644
+index 1bd4305..12b2ede 100644
 --- a/drivers/of/of_mdio.c
 +++ b/drivers/of/of_mdio.c
-@@ -280,6 +280,26 @@ bool of_phy_is_fixed_link(struct device_node *np)
+@@ -280,6 +280,22 @@ bool of_phy_is_fixed_link(struct device_node *np)
  }
  EXPORT_SYMBOL(of_phy_is_fixed_link);
 
 +bool of_phy_is_autoneg_link(struct device_node *np)
 +{
 +	struct device_node *dn;
-+	const char *link_str;
-+	int rc;
-+	bool ret = false;
++	bool ret;
 +
 +	dn = of_get_child_by_name(np, "fixed-link");
 +	if (!dn)
 +		return false;
 +
-+	rc = of_property_read_string(dn, "link", &link_str);
-+	if (rc == 0 && strcmp(link_str, "auto") == 0)
-+		ret = true;
++	ret = of_property_read_bool(dn, "autoneg");
 +
 +	of_node_put(dn);
 +	return ret;
@@ -78,43 +75,22 @@ index 1bd4305..2152cf8 100644
  int of_phy_register_fixed_link(struct device_node *np)
  {
  	struct fixed_phy_status status = {};
-@@ -291,11 +311,33 @@ int of_phy_register_fixed_link(struct device_node *np)
+@@ -291,10 +307,13 @@ int of_phy_register_fixed_link(struct device_node *np)
  	/* New binding */
  	fixed_link_node = of_get_child_by_name(np, "fixed-link");
  	if (fixed_link_node) {
 -		status.link = 1;
-+		const char *link_str;
-+		int ret;
-+		bool link_auto = false;
-+
-+		ret = of_property_read_string(fixed_link_node, "link",
-+					      &link_str);
-+		if (ret == 0) {
-+			if (strcmp(link_str, "up") == 0)
-+				status.link = 1;
-+			else
-+				status.link = 0;
-+			if (strcmp(link_str, "auto") == 0)
-+				link_auto = true;
-+		} else {
-+			status.link = 1;
-+		}
++		bool autoneg = of_property_read_bool(fixed_link_node,
++						     "autoneg");
++		status.link = !autoneg;
  		status.duplex = of_property_read_bool(fixed_link_node,
  						      "full-duplex");
 -		if (of_property_read_u32(fixed_link_node, "speed", &status.speed))
--			return -EINVAL;
 +		if (of_property_read_u32(fixed_link_node, "speed",
-+					 &status.speed) != 0) {
-+			/* in auto mode just set to some sane value:
-+			 * it will be changed by MAC later */
-+			if (link_auto)
-+				status.speed = 1000;
-+			else
-+				return -EINVAL;
-+		}
++					 &status.speed) != 0 && !autoneg)
+ 			return -EINVAL;
  		status.pause = of_property_read_bool(fixed_link_node, "pause");
  		status.asym_pause = of_property_read_bool(fixed_link_node,
- 							  "asym-pause");
 diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
 index d449018..647f348 100644
 --- a/include/linux/of_mdio.h
@@ -140,3 +116,4 @@ index d449018..647f348 100644
 
 -- 
 1.9.1
+
