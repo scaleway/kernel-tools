@@ -23,7 +23,7 @@ Name              | Maintainer      | Sources | Target | Links
 3.18.17           | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.18.17)
 3.19.8            | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v3.19.8)
 4.0.8             | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.0.8)
-4.1.1             | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.1.1)
+4.1.2             | Linux community | Open    | C1     | [Sources](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/?id=v4.1.2)
 
 ---
 
