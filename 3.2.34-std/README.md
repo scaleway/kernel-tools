@@ -4,6 +4,10 @@ Marvell 3.2.x LSP kernel with standard configuration
 
 # Changelog
 
+## 3.2.34-xx-std (xxxx-xx-xx)
+
+* Use ext4 for ext2/ext3 file systems
+
 ## 3.2.34-30-std (2015-04-13)
 
 * Disable MV_XOR ([#67](https://github.com/scaleway/kernel-tools/issues/67))

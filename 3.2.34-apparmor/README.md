@@ -4,6 +4,10 @@ Marvell 3.2.x LSP kernel with standard configuration
 
 # Changelog
 
+## 3.2.34-xx-apparmor (xxxx-xx-xx)
+
+* Use ext4 for ext2/ext3 file systems
+
 ## 3.2.34-31-apparmor (2015-06-09)
 
 * Enabled apparmor support
