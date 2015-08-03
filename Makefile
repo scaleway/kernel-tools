@@ -46,6 +46,7 @@ help:
 	@echo ' shell          KERNEL=4.0.5-std     open a shell in the kernel builder image'
 	@echo ' diff           KERNEL=4.0.5-std     show diffs between 2 .config files'
 	@echo ' publish_all    S3_TARGET=s3://me/   publish uImage, dtbs, lib, modules on s3'
+	@echo ' create         KERNEL=5.1.2-std     create a new kernel directory'
 
 
 print-%:
@@ -67,6 +68,14 @@ info:
 	@echo DOCKER_BUILDER="$(DOCKER_BUILDER)"
 	@echo ENTER_COMMAND="$(ENTER_COMMAND)"
 	@echo S3_TARGET="$(S3_TARGET)"
+
+
+create:
+	@test -d ./$(KERNEL) && echo "  Kernel $(KERNEL) already exists !" && exit 1 || true
+	mkdir -p $(KERNEL)
+	touch $(KERNEL)/.config $(KERNEL)/patch.sh
+	@echo "  Now you can generate a default configuration using:"
+	@echo "    - make mvebu_v7_defconfig KERNEL=$(KERNEL)"
 
 
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build:: local_assets
