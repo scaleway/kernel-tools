@@ -36,7 +36,7 @@ SHELL_EXEC_CMD ?=	make -f rules.mk shell
 
 all:	help
 
-
+.PHONY: help
 help:
 	@echo 'General purpose commands'
 	@echo ' menuconfig     KERNEL=4.0.5-std     run "make menuconfig" in the builder container'
