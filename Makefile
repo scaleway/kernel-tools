@@ -126,7 +126,8 @@ $(KERNEL)/patch.sh: $(KERNEL)
 
 
 $(KERNEL)/.config: $(KERNEL)
-	touch $(KERNEL)/.config
+	@echo "💣 💀    ⚠️ WARNING: Kernel '$(KERNEL)' is not yet initialized."
+	exit 1
 
 
 dist/$(KERNEL_FULL) ccache $(KERNEL):
