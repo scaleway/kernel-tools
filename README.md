@@ -63,6 +63,16 @@ Run the kernel in qemu
 
     make qemu KERNEL=3.18-defconfig_versatile
 
+## How to upgrade a kernel
+
+**An example with 4.0.8-docker**
+
+You should move the directory
+
+    git mv 4.0.8-docker 4.0.9-docker
+
+Run a `make oldconfig` with the newest version
+    make oldconfig KERNEL=4.0.9-docker
 ---
 
 Build a custom kernel from scratch (without Docker)
