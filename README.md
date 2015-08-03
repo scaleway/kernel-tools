@@ -1,12 +1,11 @@
-Kernel Config [![Build Status](https://travis-ci.org/scaleway/kernel-tools.svg?branch=master)](https://travis-ci.org/scaleway/kernel-tools)
-=============
+# Kernel Config
+[![Build Status](https://travis-ci.org/scaleway/kernel-tools.svg?branch=master)](https://travis-ci.org/scaleway/kernel-tools)
 
 https://community.cloud.online.net/t/official-linux-kernel-new-modules-optimizations-hacks/226
 
 The kernel is built with the official mainline kernel, here are the .config files used.
 
-Modifications
--------------
+## Modifications
 
 We added kernel module to simulate some virtualization features:
 - serial console activation
@@ -14,8 +13,7 @@ We added kernel module to simulate some virtualization features:
 
 ---
 
-Kernels
-=======
+## Kernels
 
 Name              | Maintainer      | Sources | Target | Links
 ------------------|-----------------|---------|--------|-------
@@ -27,8 +25,7 @@ Name              | Maintainer      | Sources | Target | Links
 
 ---
 
-Build a custom kernel using Docker
-==================================
+## Build a custom kernel using Docker
 
 Run a `make menuconfig` for `3-18-std/.config`
 
@@ -38,9 +35,11 @@ Build a kernel with `3.17-std/.config` file
 
     make build KERNEL=3.17-std
 
+## Advanced options
+
 Create a new `3.10-new/.config` file from scratch for kernel `3.10`
 
-    make defconfig KERNEL=3.10-new
+    make create defconfig KERNEL=3.10-new
 
 Make oldconfig a `3.18-std` kernel
 
@@ -50,8 +49,7 @@ Run a shell in the container for easy debugging and run custom commands
 
     make shell KERNEL=3.17-std
 
-Test a kernel with QEMU
-=======================
+## Test a kernel with QEMU
 
 You should use a config file made for `versatile`.
 
@@ -65,11 +63,9 @@ Run the kernel in qemu
 
 ---
 
-Build a custom kernel from scratch (without Docker)
-===================================================
+## Build a custom kernel from scratch (without Docker)
 
-Prerequisites:
---------------
+### Prerequisites:
 
 - An arm(hf) compiler:
   - a cross-compiler on non-armhf host, ie `gcc-arm-linux-gnueabihf`
@@ -77,8 +73,7 @@ Prerequisites:
 - Theses packages: git, wget, make
 
 
-Steps:
-------
+### Steps:
 
 - Configure environment
   ```bash
@@ -131,8 +126,7 @@ rm -rf $ARTIFACTS/modules && \
    rm $ARTIFACTS/modules/*/source $ARTIFACTS/modules/*/build
 ```
 
-Minimal configuration for C1 servers
-------------------------------------
+### Minimal configuration for C1 servers
 
 ```gherkin
 - Networking support
@@ -153,7 +147,6 @@ Minimal configuration for C1 servers
   - The Extended 4 (ext4) filesystem -> **YES**
 ```
 
-Licensing
-=========
+## Licensing
 
 © 2014-2015 Scaleway - [MIT License](https://github.com/scaleway/kernel-tools/blob/master/LICENSE).
