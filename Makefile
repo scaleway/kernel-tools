@@ -34,7 +34,18 @@ ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fe
 SHELL_EXEC_CMD ?=	make -f rules.mk shell
 
 
-all:	build
+all:	help
+
+
+help:
+	@echo 'General purpose commands'
+	@echo ' menuconfig     KERNEL=4.0.5-std     run "make menuconfig" in the builder container'
+	@echo ' oldconfig      KERNEL=4.0.5-std     run "make oldconfig" in the builder container'
+	@echo ' olddefconfig   KERNEL=4.0.5-std     run "make olddefconfig" in the builder container'
+	@echo ' build          KERNEL=4.0.5-std     run "make build" in the builder container'
+	@echo ' shell          KERNEL=4.0.5-std     open a shell in the kernel builder image'
+	@echo ' diff           KERNEL=4.0.5-std     show diffs between 2 .config files'
+	@echo ' publish_all    S3_TARGET=s3://me/   publish uImage, dtbs, lib, modules on s3'
 
 
 print-%:
