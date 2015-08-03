@@ -95,7 +95,8 @@ static int __init scalewayc1gpio_init(void) {
   /* create reboot thread */
   task = kthread_create(scalewayc1_reboot_thread, NULL, "scaleway-c1-soc-irq");
   if (IS_ERR(task)) {
-    printk(KERN_ALERT "kthread_create error\n");
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: kthread_create error\n");
+    return -1;
   }
   wake_up_process(task);
 
