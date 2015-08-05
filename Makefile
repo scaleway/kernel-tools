@@ -58,6 +58,10 @@ info:
 	@echo S3_TARGET="$(S3_TARGET)"
 
 
+update:
+	docker pull $(DOCKER_BUILDER)
+
+
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build:: local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
