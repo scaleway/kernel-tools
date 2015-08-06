@@ -87,8 +87,8 @@ static irqreturn_t scalewayc1_irq_resethandler(int irq, void *dev_id) {
 }
 
 static int __init scalewayc1gpio_init(void) {
-  unsigned int gpio;
-  int ret;
+  unsigned int gpio_r;
+  unsigned int gpio_b;
 
   printk(KERN_DEBUG "Scaleway C1 SoC IRQ: initializing\n");
 
@@ -101,19 +101,42 @@ static int __init scalewayc1gpio_init(void) {
   wake_up_process(task);
 
   /* setup an irq that watch the reset gpio state */
-  gpio = SCALEWAYC1_GPIO_SWRESET;
-  gpio_request(gpio, "softreset");
-  gpio_direction_input(gpio);
-  g_irq = gpio_to_irq(gpio);
+  gpio_r = SCALEWAYC1_GPIO_SWRESET;
+  if (gpio_request(gpio_r, "softreset") < 0) {
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: [softreset] cannot be requested\n");
+    return -1;
+  }
+  if (gpio_direction_input(gpio_r) < 0) {
+    gpio_free(gpio_r);
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: gpio_direction_input error\n");
+    return -1;
+  }
+  if ((g_irq = gpio_to_irq(gpio_r)) < 0) {
+    gpio_free(gpio_r);
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: gpio_to_irq error\n");
+    return -1;
+  }
   irq_clear_status_flags(g_irq, IRQ_LEVEL);
-  ret = request_any_context_irq(g_irq, scalewayc1_irq_resethandler,
-				IRQF_TRIGGER_FALLING, "scaleway-c1", NULL);
+  if (request_any_context_irq(g_irq, scalewayc1_irq_resethandler,
+				IRQF_TRIGGER_FALLING, "scaleway-c1", NULL) < 0) {
+    gpio_free(gpio_r);
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: request_any_context_irq error\n");
+    return -1;
+  }
 
   /* enable console, switch the booted gpio */
-  gpio = SCALEWAYC1_GPIO_BOOTED;
-  gpio_request(gpio, "booted");
-  gpio_direction_output(gpio, 0);
-
+  gpio_b = SCALEWAYC1_GPIO_BOOTED;
+  if (gpio_request(gpio_b, "booted") < 0) {
+    gpio_free(gpio_r);
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: [booted] cannot be requested\n");
+    return -1;
+  }
+  if (gpio_direction_output(gpio_b, 0) < 0) {
+    gpio_free(gpio_b);
+    gpio_free(gpio_r);
+    printk(KERN_ALERT "Scaleway C1 SoC IRQ: gpio_direction_output error\n");
+    return -1;
+  }
   printk(KERN_INFO "Scaleway C1 SoC IRQ: initialized\n");
   return 0;
 }
@@ -134,9 +157,8 @@ static void __exit scalewayc1gpio_cleanup(void) {
   /* free gpio */
   gpio_free(SCALEWAYC1_GPIO_SWRESET);
   gpio_free(SCALEWAYC1_GPIO_BOOTED);
-
+  kthread_stop(task);
   printk(KERN_DEBUG "Scaleway SoC IRQ cleaned\n");
-  return;
 }
 
 module_init(scalewayc1gpio_init);
