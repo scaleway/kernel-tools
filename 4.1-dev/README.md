@@ -1,1 +1,0 @@
-# :warning: Development version :warning:
