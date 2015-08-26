@@ -134,7 +134,7 @@ $(KERNEL)/patch.sh: $(KERNEL)
 	chmod +x $@
 
 
-$(KERNEL)/.config: $(KERNEL)
+$(KERNEL)/.config:
 	@echo "💣 💀    ⚠️ WARNING: Kernel '$(KERNEL)' is not yet initialized."
 	exit 1
 
