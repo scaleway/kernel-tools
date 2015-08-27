@@ -7,7 +7,6 @@ sudo: required
 
 env:
 - ACTION=check
-- ACTION=build TRAVIS_TAG=4.1.6-std-1
 - ACTION=build
 
 before_install:
