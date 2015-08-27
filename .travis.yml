@@ -1,32 +1,29 @@
 language: bash
 
+services:
+- docker
 
-sudo: false
-
+sudo: required
 
 env:
-- TRAVIS_GLOBAL_WTF=1 # See https://github.com/docker/swarm/blob/master/.travis.yml
-- _KERNEL=3.18.20-std
-- _KERNEL=3.19.8-pbox
-- _KERNEL=3.2.34-san
-- _KERNEL=3.2.34-std
-- _KERNEL=4.1.6-apparmor
-- _KERNEL=4.1.6-docker
-- _KERNEL=4.1.6-fedora
-- _KERNEL=4.1.6-std
-- _KERNEL=4.1.6-debug
+- ACTION=check
+- ACTION=build
 
-
-install:
-- if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     make travis_prepare;
-  fi
-
+before_install:
+- docker images
+- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then docker pull moul/kernel-builder:stable-cross-armhf; fi
+- docker images
 
 script:
-- if [ "$TRAVIS_GLOBAL_WTF" ]; then
-     make travis_common;
-  fi
-- if [ -z "$TRAVIS_GLOBAL_WTF" ]; then
-     make travis_kernel KERNEL=${_KERNEL};
-  fi
+- env
+- docker version
+- docker info
+- df -h
+- if [ "$ACTION" = "check" ]; then make travis_check; fi
+- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then make travis_build CCACHE_DIR=$HOME/.ccache; fi
+- if [ -d dist ]; then ls -laR dist; fi
+- docker info
+- docker images
+- df -h
+
+ccache: ccache
