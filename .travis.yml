@@ -21,8 +21,10 @@ script:
 - docker info
 - df -h
 - if [ "$ACTION" = "check" ]; then make travis_check; fi
-- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then make travis_build; fi
+- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then make travis_build CCACHE_DIR=$HOME/.ccache; fi
 - if [ -d dist ]; then ls -laR dist; fi
 - docker info
 - docker images
 - df -h
+
+ccache: ccache
