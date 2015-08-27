@@ -2,7 +2,7 @@ KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard [34]*/.latest)))
 -include $(KERNEL)/include.mk
 
 # Default variables
-KERNELS ?=		$(wildcard [34].*)
+KERNELS ?=		$(wildcard [34].*.*-*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
@@ -17,10 +17,11 @@ DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL) \
 			-e LOCALVERSION_AUTO=no
 
+CCACHE_DIR ?=	$(PWD)/ccache
 LINUX_PATH=/usr/src/linux
 DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
 			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
-			-v $(PWD)/ccache:/ccache \
+			-v $(CCACHE_DIR):/ccache \
 			-v $(PWD)/patches:$(LINUX_PATH)/patches:rw \
 			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patches-apply.sh:ro \
 			-v $(PWD)/rules.mk:$(LINUX_PATH)/rules.mk:ro \
@@ -32,7 +33,8 @@ DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
 ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fetch --tags) && git checkout $(CHECKOUT_TARGET) && git log HEAD^..HEAD
 SHELL_EXEC_CMD ?=	make -f rules.mk shell
-
+REVISION ?=		manual
+TRAVIS_TAG ?=
 
 all:	help
 
@@ -160,7 +162,7 @@ tools/lxc-checkconfig.sh:
 	curl -sLo $@ https://raw.githubusercontent.com/dotcloud/lxc/master/src/lxc/lxc-checkconfig.in
 	chmod +x $@
 
-travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
+travis_kernel:	local_assets tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
 	bash -n $(KERNEL)/.config
 
 	# Optional checks, these checks won't fail but we can see the detail in the Travis build result
@@ -175,16 +177,12 @@ travis_kernel:	local_assets travis_prepare tools/lxc-checkconfig.sh tools/docker
 
 
 # travis_common + travis_kernel for each kernels
-travis:	travis_common
+travis_check:	travis_common
 	echo $(KERNELS)
 	for kernel in $(KERNELS); do \
 	  make travis_kernel KERNEL=$$kernel || exit 1; \
 	done
 
 
-# Docker in Travis toolsuite
-travis_prepare:	./run
-./run:
-	# Disabled for now (see travis_kernel below)
-	# curl -sLo - https://github.com/moul/travis-docker/raw/master/install.sh | sh -xe
-	exit 0
+travis_build:
+	$(MAKE) build KERNEL=$(shell echo $(TRAVIS_TAG) | cut -d- -f1,2) REVISION=$(shell echo $(TRAVIS_TAG) | cut -d- -f3)
