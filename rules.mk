@@ -75,6 +75,7 @@ uImage: apply-patches
 	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
 	cp include/config/kernel.release build/kernel.release
+	cp Modules.symvers modules.builtin modules.order build/
 	echo $(KERNEL_VERSION)
 	cp arch/arm/boot/uImage build/uImage-$(KERNEL_VERSION)
 	cp -f build/uImage-$(KERNEL_VERSION) build/uImage
@@ -82,6 +83,7 @@ uImage: apply-patches
 	cp -f build/Image-$(KERNEL_VERSION) build/Image
 	cp arch/arm/boot/zImage build/zImage-$(KERNEL_VERSION)
 	cp -f build/zImage-$(KERNEL_VERSION) build/zImage
+	cp -f build/config-$(KERNEL_VERSION) build/config
 
 
 build_info:
