@@ -80,7 +80,7 @@ create:
 	@echo "    - make mvebu_v7_defconfig KERNEL=$(KERNEL)"
 
 
-oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build tar-pkg:: local_assets
+oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build tar-pkg uImage:: local_assets
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
 
