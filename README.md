@@ -13,6 +13,28 @@ We added kernel module to simulate some virtualization features:
 
 ---
 
+## How to build a custom kernel module
+
+```bash
+# Get kernel sources
+KERNEL_RELEASE_VERSION=4.2  # warning: usually equal to $(uname -r) but not everytime
+mkdir -p -- /usr/src
+cd /usr/src
+wget https://kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL_RELEASE_VERSION}.tar.xz
+tar xf linux-${KERNEL_RELEASE_VERSION}.tar.xz
+ln -s linux-${KERNEL_RELEASE_VERSION} linux
+ln -s /usr/src/linux /lib/modules/$(uname -r)/build
+
+# Prepare kernel
+cd /usr/src/linux
+zcat /proc/config.gz > .config
+wget http://mirror.scaleway.com/kernel/$(uname -r)/Module.symvers
+make prepare module_prepare
+```
+
+Then you can make your module as usual by configuring `KDIR=/lib/modules/$(uname -r)/build/`
+
+
 ## Kernels
 
 Name              | Maintainer      | Sources | Target | Links
