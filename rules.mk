@@ -22,7 +22,6 @@ enter:
 leave:
 	cp .config /tmp/.config
 
-
 oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig: apply-patches
 	$(MAKE) $@
 
@@ -44,7 +43,7 @@ apply-patches:
 
 build:
 	@mv build/build.txt build/build-prev.txt || true
-	$(MAKE) -f rules.mk uImage dtbs build_info 2>&1 | tee build/build.txt
+	$(MAKE) -f rules.mk uImage dtbs tar-pkg build_info 2>&1 | tee build/build.txt
 
 
 dtbs: /usr/bin/dtc apply-patches
@@ -75,6 +74,7 @@ uImage: apply-patches
 	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
 	cp include/config/kernel.release build/kernel.release
+	cp Module.symvers modules.builtin modules.order build/
 	echo $(KERNEL_VERSION)
 	cp arch/arm/boot/uImage build/uImage-$(KERNEL_VERSION)
 	cp -f build/uImage-$(KERNEL_VERSION) build/uImage
@@ -82,6 +82,12 @@ uImage: apply-patches
 	cp -f build/Image-$(KERNEL_VERSION) build/Image
 	cp arch/arm/boot/zImage build/zImage-$(KERNEL_VERSION)
 	cp -f build/zImage-$(KERNEL_VERSION) build/zImage
+	cp -f build/config-$(KERNEL_VERSION) build/config
+
+
+tar-pkg: apply-patches
+	make $(J) tar-pkg
+	cp *.tar build
 
 
 build_info:

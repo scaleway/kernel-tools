@@ -33,8 +33,12 @@
 
 	soc {
 		ranges = <MBUS_ID(0xf0, 0x01) 0 0 0xd0000000 0x100000
-			  MBUS_ID(0x01, 0x1d) 0 0 0xfff00000 0x100000
-			  MBUS_ID(0x01, 0x2f) 0 0 0xf0000000 0x1000000>;
+		          MBUS_ID(0x01, 0x1d) 0 0 0xfff00000 0x100000
+		          MBUS_ID(0x01, 0x2f) 0 0 0xf0000000 0x1000000
+		          MBUS_ID(0x09, 0x09) 0 0 0xf8100000 0x10000
+		          MBUS_ID(0x09, 0x05) 0 0 0xf8110000 0x10000>;
+
+
 
 		devbus-bootcs {
 			status = "okay";
@@ -77,6 +81,35 @@
 				broken-cd;
 			};
 
+			crypto@90000 {
+				compatible = "marvell,armada-xp-crypto";
+				reg = <0x90000 0x10000>;
+				reg-names = "regs";
+				interrupts = <48>, <49>;
+				clocks = <&gateclk 23>, <&gateclk 23>;
+				clock-names = "cesa0", "cesa1";
+				marvell,crypto-srams = <&crypto_sram0>, <&crypto_sram1>;
+				marvell,crypto-sram-size = <0x600>;
+				status = "okay";
+			};
+		};
+
+		crypto_sram0: sa-sram0 {
+			compatible = "mmio-sram";
+			reg = <MBUS_ID(0x09, 0x09) 0 0x800>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges = <0 MBUS_ID(0x09, 0x09) 0 0x800>;
+			status = "okay";
+		};
+
+		crypto_sram1: sa-sram1 {
+			compatible = "mmio-sram";
+			reg = <MBUS_ID(0x09, 0x05) 0 0x800>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges = <0 MBUS_ID(0x09, 0x05) 0 0x800>;
+			status = "okay";
 		};
 	};
 	aliases {
