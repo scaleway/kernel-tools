@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+KVER=4.x-rcN
+
 /bin/bash -x patches/patch_aufs.bash
 
 patch -p1 < patches/patch-enable-IO-coherency-4.0.patch

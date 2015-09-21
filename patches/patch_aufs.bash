@@ -9,7 +9,7 @@ set -e
 # Target Kernel Version
 VERSION=$(grep '^VERSION\s*=' Makefile | cut -d= -f2 | sed 's/\s//g')
 PATCHLEVEL=$(grep '^PATCHLEVEL\s*=' Makefile | cut -d= -f2 | sed 's/\s//g')
-KVER=$VERSION.$PATCHLEVEL
+KVER=${KVER:-$VERSION.$PATCHLEVEL}
 # Temporary Location
 #TMPGIT=`mktemp -d`
 GIT=patches/aufs-aufs3-standalone
