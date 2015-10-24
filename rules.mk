@@ -65,9 +65,23 @@ shell:
 
 defconfig:	$(ARCH_CONFIG)_defconfig
 
+bzImage: apply-patches
+	make $(J) bzImage
+	make $(J) modules
+	make headers_install INSTALL_HDR_PATH=build
+	cd build/ && tar cf include.tar include
+	make modules_install INSTALL_MOD_PATH=build
+	cd build/ && tar cf lib.tar lib
+	make install INSTALL_PATH=build
+	cp include/config/kernel.release build/kernel.release
+	echo $(KERNEL_VERSION)
+	#find . -name "*Image*"
+	cp arch/x86_64/boot/bzImage build/bzImage-$(KERNEL_VERSION)
+	cp -f build/bzImage-$(KERNEL_VERSION) build/bzImage
+
 
 uImage: apply-patches
-	make $(J) uImage
+	make $(J) uImageq
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
