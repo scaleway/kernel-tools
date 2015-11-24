@@ -119,7 +119,7 @@ publish_on_store_ftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include
 publish_on_store_sftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
-	  lftp -u $(STORE_USERNAME) -p 2222 sftp://$(STORE_HOSTNAME) -e "cd store/kernels/$(KERNEL_FULL); put $$file; bye"; \
+	  lftp -u $(STORE_USERNAME) -p 2222 sftp://$(STORE_HOSTNAME) -e "mkdir store/kernels/$(KERNEL_FULL); cd store/kernels/$(KERNEL_FULL); put $$file; bye"; \
 	done
 
 
