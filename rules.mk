@@ -81,7 +81,7 @@ bzImage: apply-patches
 
 
 uImage: apply-patches
-	make $(J) uImageq
+	make $(J) uImage
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
