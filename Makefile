@@ -11,6 +11,8 @@ ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
+STORE_HOSTNAME ?=	store.scw.42.am
+STORE_TARGET ?=		$(STORE_HOSTNAME):store/kernels/$(KERNEL_FULL)
 CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
@@ -41,14 +43,15 @@ all:	help
 .PHONY: help
 help:
 	@echo 'General purpose commands'
-	@echo ' menuconfig     KERNEL=4.0.5-std     run "make menuconfig" in the builder container'
-	@echo ' oldconfig      KERNEL=4.0.5-std     run "make oldconfig" in the builder container'
-	@echo ' olddefconfig   KERNEL=4.0.5-std     run "make olddefconfig" in the builder container'
-	@echo ' build          KERNEL=4.0.5-std     run "make build" in the builder container'
-	@echo ' shell          KERNEL=4.0.5-std     open a shell in the kernel builder image'
-	@echo ' diff           KERNEL=4.0.5-std     show diffs between 2 .config files'
-	@echo ' publish_all    S3_TARGET=s3://me/   publish uImage, dtbs, lib, modules on s3'
-	@echo ' create         KERNEL=5.1.2-std     create a new kernel directory'
+	@echo ' menuconfig       KERNEL=4.0.5-std       run "make menuconfig" in the builder container'
+	@echo ' oldconfig        KERNEL=4.0.5-std       run "make oldconfig" in the builder container'
+	@echo ' olddefconfig     KERNEL=4.0.5-std       run "make olddefconfig" in the builder container'
+	@echo ' build            KERNEL=4.0.5-std       run "make build" in the builder container'
+	@echo ' shell            KERNEL=4.0.5-std       open a shell in the kernel builder image'
+	@echo ' diff             KERNEL=4.0.5-std       show diffs between 2 .config files'
+	@echo ' publish_on_s3    S3_TARGET=s3://me/     publish uImage, dtbs, lib, modules on s3'
+	@echo ' publish_on_store STORE_TARGET=str.io/me publish uImage, dtbs, lib, modules on store'
+	@echo ' create           KERNEL=5.1.2-std       create a new kernel directory'
 
 
 print-%:
@@ -89,15 +92,34 @@ shell_exec::
 	docker exec -it `docker ps -f image=$(DOCKER_BUILDER) -f event=start -lq` $(SHELL_EXEC_CMD)
 
 
-publish_uImage: dist/$(KERNEL_FULL)/uImage
+publish_uImage_on_s3: dist/$(KERNEL_FULL)/uImage
 	s3cmd put --acl-public $< $(S3_TARGET)
 	wget --read-timeout=3 --tries=0 -O - $(shell s3cmd info $(S3_TARGET)uImage | grep URL | awk '{print $$2}') >/dev/null
 
 
-publish_all: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+publish_on_s3: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
 	  s3cmd put --acl-public $$file $(S3_TARGET); \
+	done
+
+
+publish_on_store: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+	cd dist/$(KERNEL_FULL) && \
+	rsync -avze ssh lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt $(STORE_TARGET)
+
+
+publish_on_store_ftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+	cd dist/$(KERNEL_FULL) && \
+	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
+	  curl -T "$$file" --netrc ftp://$(STORE_HOSTNAME)/kernels/$(KERNEL_FULL)/; \
+	done
+
+
+publish_on_store_sftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+	cd dist/$(KERNEL_FULL) && \
+	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
+	  lftp -u $(STORE_USERNAME) -p 2222 sftp://$(STORE_HOSTNAME) -e "cd store/kernels/$(KERNEL_FULL); put $$file; bye"; \
 	done
 
 
