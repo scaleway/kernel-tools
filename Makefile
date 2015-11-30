@@ -2,10 +2,11 @@ KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard [34]*/.latest)))
 -include $(KERNEL)/include.mk
 
 # Default variables
+REVISION ?=		manual
 KERNELS ?=		$(wildcard [34].*.*-*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
-KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)
+KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)-$(REVISION)
 DOCKER_BUILDER ?=	moul/kernel-builder:stable-cross-armhf
 ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
@@ -35,7 +36,6 @@ DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
 ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fetch --tags) && git checkout $(CHECKOUT_TARGET) && git log HEAD^..HEAD
 SHELL_EXEC_CMD ?=	make -f rules.mk shell
-REVISION ?=		manual
 TRAVIS_TAG ?=
 
 all:	help
