@@ -5,6 +5,8 @@ https://community.cloud.online.net/t/official-linux-kernel-new-modules-optimizat
 
 The kernel is built with the official mainline kernel, here are the .config files used.
 
+The list of Scaleway's bootscripts is available at http://devhub.scaleway.com/#/bootscripts.
+
 ## Modifications
 
 We added kernel module to simulate some virtualization features:
