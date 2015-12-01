@@ -13,6 +13,7 @@ CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed
 J ?=			-j $(CONCURRENCY_LEVEL)
 S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
 STORE_HOSTNAME ?=	store.scw.42.am
+STORE_USERNAME ?=	$(shell whoami)
 STORE_TARGET ?=		$(STORE_HOSTNAME):store/kernels/$(KERNEL_FULL)
 CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 
