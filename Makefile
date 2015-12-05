@@ -7,7 +7,7 @@ KERNELS ?=		$(wildcard [34].*.*-*)
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
 KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
 KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)-$(REVISION)
-DOCKER_BUILDER ?=	moul/kernel-builder:stable-cross-armhf
+DOCKER_BUILDER ?=	moul/kernel-builder:latest
 ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
@@ -19,7 +19,9 @@ CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 
 DOCKER_ENV ?=		-e LOADADDR=0x8000 \
 			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL) \
-			-e LOCALVERSION_AUTO=no
+			-e LOCALVERSION_AUTO=no \
+			-e ARCH=arm \
+			-e CROSS_COMPILE="ccache arm-linux-gnueabihf-"
 
 CCACHE_DIR ?=	$(PWD)/ccache
 LINUX_PATH=/usr/src/linux
