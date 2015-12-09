@@ -1,14 +1,15 @@
-KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard [34]*/.latest)))
+KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard armhf/*-*/.latest)))
 -include $(KERNEL)/include.mk
 
 # Default variables
 REVISION ?=		manual
-KERNELS ?=		$(wildcard [34].*.*-*)
-KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d- -f1)
-KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d- -f2)
-KERNEL_FULL ?=		$(KERNEL_VERSION)-$(KERNEL_FLAVOR)-$(REVISION)
+KERNELS ?=		$(wildcard amd64/*-* armhf/*-*)
+KERNEL_ARCH ?=		$(shell echo $(KERNEL) | cut -d/ -f1)
+-include $(KERNEL_ARCH)/include.mk
+KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d/ -f2 | cut -d- -f1)
+KERNEL_FLAVOR ?=	$(shell echo $(KERNEL) | cut -d/ -f2 | cut -d- -f2)
+KERNEL_FULL ?=		$(KERNEL_ARCH)-$(KERNEL_VERSION)-$(KERNEL_FLAVOR)-$(REVISION)
 DOCKER_BUILDER ?=	moul/kernel-builder:latest
-ARCH_CONFIG ?=		mvebu_v7
 CONCURRENCY_LEVEL ?=	$(shell grep -m1 cpu\ cores /proc/cpuinfo 2>/dev/null | sed 's/[^0-9]//g' | grep '[0-9]' || sysctl hw.ncpu | sed 's/[^0-9]//g' | grep '[0-9]')
 J ?=			-j $(CONCURRENCY_LEVEL)
 S3_TARGET ?=		s3://$(shell whoami)/$(KERNEL_FULL)/
@@ -17,23 +18,9 @@ STORE_USERNAME ?=	$(shell whoami)
 STORE_TARGET ?=		$(STORE_HOSTNAME):store/kernels/$(KERNEL_FULL)
 CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 
-DOCKER_ENV ?=		-e LOADADDR=0x8000 \
-			-e CONCURRENCY_LEVEL=$(CONCURRENCY_LEVEL) \
-			-e LOCALVERSION_AUTO=no \
-			-e ARCH=arm \
-			-e CROSS_COMPILE="ccache arm-linux-gnueabihf-"
 
 CCACHE_DIR ?=	$(PWD)/ccache
 LINUX_PATH=/usr/src/linux
-DOCKER_VOLUMES ?=	-v $(PWD)/$(KERNEL)/.config:/tmp/.config \
-			-v $(PWD)/dist/$(KERNEL_FULL):$(LINUX_PATH)/build/ \
-			-v $(CCACHE_DIR):/ccache \
-			-v $(PWD)/patches:$(LINUX_PATH)/patches:rw \
-			-v $(PWD)/$(KERNEL)/patch.sh:$(LINUX_PATH)/patches-apply.sh:ro \
-			-v $(PWD)/rules.mk:$(LINUX_PATH)/rules.mk:ro \
-			-v $(PWD)/dtbs/scaleway-c1.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1.dts:ro \
-			-v $(PWD)/dtbs/scaleway-c1-xen.dts:$(LINUX_PATH)/arch/arm/boot/dts/scaleway-c1-xen.dts:ro \
-			-v $(PWD)/dtbs/onlinelabs-pbox.dts:$(LINUX_PATH)/arch/arm/boot/dts/onlinelabs-pbox.dts:ro
 
 DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
@@ -62,20 +49,21 @@ print-%:
 
 
 info:
-	@echo ARCH_CONFIG="$(ARCH_CONFIG)"
-	@echo CONCURRENCY_LEVEL="$(CONCURRENCY_LEVEL)"
-	@echo DOCKER_ENV="$(DOCKER_ENV)"
-	@echo DOCKER_RUN_OPTS="$(DOCKER_RUN_OPTS)"
-	@echo DOCKER_VOLUMES="$(DOCKER_VOLUMES)"
-	@echo KERNEL="$(KERNEL)"
-	@echo KERNEL_FLAVOR="$(KERNEL_FLAVOR)"
-	@echo KERNEL_FULL="$(KERNEL_FULL)"
-	@echo KERNEL_TYPE="$(KERNEL_TYPE)"
-	@echo KERNEL_VERSION="$(KERNEL_VERSION)"
-	@echo LINUX_PATH="$(LINUX_PATH)"
-	@echo DOCKER_BUILDER="$(DOCKER_BUILDER)"
-	@echo ENTER_COMMAND="$(ENTER_COMMAND)"
-	@echo S3_TARGET="$(S3_TARGET)"
+	@echo "KERNEL			$(KERNEL)"
+	@echo "KERNEL_FLAVOR		$(KERNEL_FLAVOR)"
+	@echo "KERNEL_FULL		$(KERNEL_FULL)"
+	@echo "KERNEL_TYPE		$(KERNEL_TYPE)"
+	@echo "KERNEL_VERSION		$(KERNEL_VERSION)"
+	@echo "KERNEL_ARCH		$(KERNEL_ARCH)"
+	@echo "ARCH_CONFIG		$(ARCH_CONFIG)"
+	@echo "CONCURRENCY_LEVEL	$(CONCURRENCY_LEVEL)"
+	@echo "DOCKER_ENV		$(DOCKER_ENV)"
+	@echo "DOCKER_RUN_OPTS		$(DOCKER_RUN_OPTS)"
+	@echo "DOCKER_VOLUMES		$(DOCKER_VOLUMES)"
+	@echo "LINUX_PATH		$(LINUX_PATH)"
+	@echo "DOCKER_BUILDER		$(DOCKER_BUILDER)"
+	@echo "ENTER_COMMAND		$(ENTER_COMMAND)"
+	@echo "S3_TARGET		$(S3_TARGET)"
 
 
 create:
@@ -102,26 +90,26 @@ publish_uImage_on_s3: dist/$(KERNEL_FULL)/uImage
 
 publish_on_s3: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
+	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt; do \
 	  s3cmd put --acl-public $$file $(S3_TARGET); \
 	done
 
 
 publish_on_store: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	rsync -avze ssh lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt $(STORE_TARGET)
+	rsync -avze ssh lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt $(STORE_TARGET)
 
 
 publish_on_store_ftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
+	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt; do \
 	  curl -T "$$file" --netrc ftp://$(STORE_HOSTNAME)/kernels/$(KERNEL_FULL)/; \
 	done
 
 
 publish_on_store_sftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	for file in lib.tar.gz include.tar.gz uImage* zImage* config* vmlinuz* build.txt; do \
+	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt; do \
 	  lftp -u $(STORE_USERNAME) -p 2222 sftp://$(STORE_HOSTNAME) -e "mkdir store/kernels/$(KERNEL_FULL); cd store/kernels/$(KERNEL_FULL); put $$file; bye"; \
 	done
 
@@ -136,14 +124,6 @@ dist/$(KERNEL_FULL)/include.tar.gz: dist/$(KERNEL_FULL)/include
 
 # dist/$(KERNEL_FULL)/lib dist/$(KERNEL_FULL)/include:	build
 
-
-qemu:
-	qemu-system-arm \
-		-M versatilepb \
-		-m 256 \
-		-initrd ./dist/$(KERNEL_FULL)/initrd.img-* \
-		-kernel ./dist/$(KERNEL_FULL)/uImage-* \
-		-append "console=tty1"
 
 clean:
 	rm -rf dist/$(KERNEL_FULL)
@@ -195,7 +175,7 @@ travis_kernel:	local_assets tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
 	# Checking C1 compatibility
-	./tools/verify_kernel_config.pl $(KERNEL_TYPE) $(KERNEL)/.config
+	./tools/verify_kernel_config.pl $(KERNEL_ARCH)-$(KERNEL_TYPE) $(KERNEL)/.config
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
 	# ./run $(MAKE) oldconfig
