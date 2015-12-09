@@ -22,7 +22,6 @@ CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
 CCACHE_DIR ?=	$(PWD)/ccache
 LINUX_PATH=/usr/src/linux
 
-DOCKER_RUN_OPTS ?=	-it --rm
 KERNEL_TYPE ?=		mainline
 ENTER_COMMAND ?=	(git show-ref refs/tags/v$(KERNEL_VERSION) >/dev/null || git fetch --tags) && git checkout $(CHECKOUT_TARGET) && git log HEAD^..HEAD
 SHELL_EXEC_CMD ?=	make -f rules.mk shell
@@ -58,7 +57,6 @@ info:
 	@echo "ARCH_CONFIG		$(ARCH_CONFIG)"
 	@echo "CONCURRENCY_LEVEL	$(CONCURRENCY_LEVEL)"
 	@echo "DOCKER_ENV		$(DOCKER_ENV)"
-	@echo "DOCKER_RUN_OPTS		$(DOCKER_RUN_OPTS)"
 	@echo "DOCKER_VOLUMES		$(DOCKER_VOLUMES)"
 	@echo "LINUX_PATH		$(LINUX_PATH)"
 	@echo "DOCKER_BUILDER		$(DOCKER_BUILDER)"
@@ -74,8 +72,13 @@ create:
 	@echo "    - make mvebu_v7_defconfig KERNEL=$(KERNEL)"
 
 
-oldconfig olddefconfig menuconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage shell build bzImage:: local_assets
-	docker run $(DOCKER_RUN_OPTS) $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
+shell menuconfig:: local_assets
+	docker run -it $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
+		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
+
+
+oldconfig olddefconfig $(ARCH_CONFIG)_defconfig dtbs diff cache_stats uImage build bzImage:: local_assets
+	docker run -i $(DOCKER_ENV) $(DOCKER_VOLUMES) $(DOCKER_BUILDER) \
 		make -f rules.mk ENTER_COMMAND="$(ENTER_COMMAND)" J="$(J)" enter $@ leave
 
 
