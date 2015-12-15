@@ -11,7 +11,7 @@ env:
 
 before_install:
 - docker images
-- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then docker pull moul/kernel-builder:stable-cross-armhf; fi
+- if [ "$ACTION" = "build" -a -n "$TRAVIS_TAG" ]; then docker pull moul/kernel-builder; fi
 - docker images
 
 script:
