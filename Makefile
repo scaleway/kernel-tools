@@ -17,6 +17,9 @@ STORE_HOSTNAME ?=	store.scw.42.am
 STORE_USERNAME ?=	$(shell whoami)
 STORE_TARGET ?=		$(STORE_HOSTNAME):store/kernels/$(KERNEL_FULL)
 CHECKOUT_TARGET ?= 	refs/tags/v$(KERNEL_VERSION)
+LOCALVERSION ?=		-$(KERNEL_FLAVOR)-$(REVISION)
+KBUILD_BUILD_USER ?=	$(shell whoami)
+KBUILD_BUILD_HOST ?=	$(shell hostname)
 
 
 CCACHE_DIR ?=	$(PWD)/ccache
