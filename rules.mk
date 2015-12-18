@@ -60,7 +60,8 @@ dtbs: /usr/bin/dtc apply-patches
 	sed -i "s/armada-xp-db.dtb/scaleway-c1.dtb\ onlinelabs-pbox.dtb/g" arch/arm/boot/dts/Makefile
 	git update-index --assume-unchanged arch/arm/boot/dts/Makefile
 	$(MAKE) dtbs
-	cp arch/arm/boot/dts/onlinelabs-*.dtb arch/arm/boot/dts/scaleway-*.dtb build/
+	mkdir -p build/dtbs
+	cp arch/arm/boot/dts/onlinelabs-*.dtb arch/arm/boot/dts/scaleway-*.dtb build/dtbs
 
 
 ccache_stats:
@@ -104,6 +105,7 @@ uImage: apply-patches
 	cp -f build/Image-$(KERNEL_VERSION) build/Image
 	cp arch/arm/boot/zImage build/zImage-$(KERNEL_VERSION)
 	cp -f build/zImage-$(KERNEL_VERSION) build/zImage
+	cp -f build/config-$(KERNEL_VERSION) build/config
 
 
 build_info:
