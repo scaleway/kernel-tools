@@ -105,7 +105,7 @@ publish_on_store: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt; do \
 	  if [ -f $$file ]; then \
-	    rsync -avze ssh $$filt $(STORE_TARGET); \
+	    rsync -avze ssh $$file $(STORE_TARGET); \
 	  fi; \
 	done
 
