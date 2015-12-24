@@ -103,7 +103,11 @@ publish_on_s3: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 
 publish_on_store: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
-	rsync -avze ssh lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt $(STORE_TARGET)
+	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt; do \
+	  if [ -f $$file ]; then \
+	    rsync -avze ssh $$filt $(STORE_TARGET); \
+	  fi; \
+	done
 
 
 publish_on_store_ftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
