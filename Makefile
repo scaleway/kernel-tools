@@ -98,6 +98,7 @@ publish_on_s3: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt dtbs/*; do \
 	  s3cmd put --acl-public $$file $(S3_TARGET); \
+	  sleep 5; \
 	done
 
 
