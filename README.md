@@ -31,7 +31,7 @@ ln -s /usr/src/linux /lib/modules/$(uname -r)/build
 cd /usr/src/linux
 zcat /proc/config.gz > .config
 wget http://mirror.scaleway.com/kernel/$(uname -r)/Module.symvers
-make prepare module_prepare
+make prepare modules_prepare
 ```
 
 Then you can make your module as usual by configuring `KDIR=/lib/modules/$(uname -r)/build/`
