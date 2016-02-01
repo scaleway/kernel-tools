@@ -94,7 +94,7 @@ publish_uImage_on_s3: dist/$(KERNEL_FULL)/uImage
 	wget --read-timeout=3 --tries=0 -O - $(shell s3cmd info $(S3_TARGET)uImage | grep URL | awk '{print $$2}') >/dev/null
 
 
-publish_on_s3: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+publish_on_s3: dist/$(KERNEL_FULL)/dtbs/_ dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt dtbs/*; do \
 	  s3cmd put --acl-public $$file $(S3_TARGET); \
@@ -111,18 +111,23 @@ publish_on_store: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar
 	done
 
 
-publish_on_store_ftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+publish_on_store_ftp: dist/$(KERNEL_FULL)/dtbs/_ dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt dtbs/*; do \
 	  curl -T "$$file" --netrc ftp://$(STORE_HOSTNAME)/kernels/$(KERNEL_FULL)/; \
 	done
 
 
-publish_on_store_sftp: dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
+publish_on_store_sftp: dist/$(KERNEL_FULL)/dtbs/_ dist/$(KERNEL_FULL)/lib.tar.gz dist/$(KERNEL_FULL)/include.tar.gz
 	cd dist/$(KERNEL_FULL) && \
 	for file in lib.tar.gz include.tar.gz uImage* *zImage* config* vmlinuz* build.txt dtbs/*; do \
 	  lftp -u $(STORE_USERNAME) -p 2222 sftp://$(STORE_HOSTNAME) -e "mkdir store/kernels/$(KERNEL_FULL); cd store/kernels/$(KERNEL_FULL); put $$file; bye"; \
 	done
+
+
+dist/$(KERNEL_FULL)/dtbs/_:
+	mkdir -p dist/$(KERNEL_FULL)/dtbs
+	touch $@
 
 
 dist/$(KERNEL_FULL)/lib.tar.gz: dist/$(KERNEL_FULL)/lib
