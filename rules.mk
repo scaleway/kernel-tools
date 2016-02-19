@@ -1,6 +1,7 @@
 KERNEL_VERSION =	$(shell (test -f include/config/kernel.release || $(MAKE) include/config/kernel.release &>/dev/null); cat include/config/kernel.release)
 ARCH_CONFIG ?=		mvebu_v7
 J ?=			-j $(CONCURRENCY_LEVEL)
+ARTIFACTS_TO_COPY ?=	include/config/kernel.release Module.symvers modules.builtin modules.order System.map
 
 
 all:
@@ -82,7 +83,7 @@ bzImage: apply-patches
 	make modules_install INSTALL_MOD_PATH=build
 	cd build/ && tar cf lib.tar lib
 	make install INSTALL_PATH=build
-	cp include/config/kernel.release build/kernel.release
+	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
 	echo $(KERNEL_VERSION)
 	#find . -name "*Image*"
 	cp arch/x86_64/boot/bzImage build/bzImage-$(KERNEL_VERSION)
@@ -97,7 +98,7 @@ uImage: apply-patches
 	make modules_install INSTALL_MOD_PATH=build
 	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
-	cp include/config/kernel.release build/kernel.release
+	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
 	echo $(KERNEL_VERSION)
 	cp arch/arm/boot/uImage build/uImage-$(KERNEL_VERSION)
 	cp -f build/uImage-$(KERNEL_VERSION) build/uImage
