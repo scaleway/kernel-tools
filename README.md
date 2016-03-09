@@ -21,6 +21,7 @@ You'll need the usual toolchain for kernel compilation, which on Ubuntu is gener
 
 ```bash
 # Determine versions
+arch="$(uname -m)"
 release="$(uname -r)"
 upstream="${release%%-*}"
 local="${release#*-}"
@@ -36,7 +37,7 @@ ln -s /usr/src/linux /lib/modules/${release}/build
 # Prepare kernel
 zcat /proc/config.gz > /usr/src/linux/.config
 printf 'CONFIG_LOCALVERSION="%s"\n' "${local:+-$local}" >> /usr/src/linux/.config
-wget "http://mirror.scaleway.com/kernel/${release}/Module.symvers" -O /usr/src/linux/Module.symvers
+wget "http://mirror.scaleway.com/kernel/${arch}/${release}/Module.symvers" -O /usr/src/linux/Module.symvers
 make -C /usr/src/linux prepare modules_prepare
 ```
 
