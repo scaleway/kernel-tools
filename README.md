@@ -17,21 +17,27 @@ We added kernel module to simulate some virtualization features:
 
 ## How to build a custom kernel module
 
+You'll need the usual toolchain for kernel compilation, which on Ubuntu is generally fulfilled by `apt-get install build-essential libssl-dev`. Then, the following script can be run.
+
 ```bash
+# Determine versions
+release="$(uname -r)"
+upstream="${release%%-*}"
+local="${release#*-}"
+
 # Get kernel sources
-KERNEL_RELEASE_VERSION=4.2  # warning: usually equal to $(uname -r) but not everytime
 mkdir -p -- /usr/src
 cd /usr/src
-wget https://kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL_RELEASE_VERSION}.tar.xz
-tar xf linux-${KERNEL_RELEASE_VERSION}.tar.xz
-ln -s linux-${KERNEL_RELEASE_VERSION} linux
-ln -s /usr/src/linux /lib/modules/$(uname -r)/build
+wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${upstream}.tar.xz
+tar xf linux-${upstream}.tar.xz
+ln -s linux-${upstream} linux
+ln -s /usr/src/linux /lib/modules/${release}/build
 
 # Prepare kernel
-cd /usr/src/linux
-zcat /proc/config.gz > .config
-wget http://mirror.scaleway.com/kernel/$(uname -r)/Module.symvers
-make prepare modules_prepare
+zcat /proc/config.gz > /usr/src/linux/.config
+printf 'CONFIG_LOCALVERSION="%s"\n' "${local:+-$local}" >> /usr/src/linux/.config
+wget "http://mirror.scaleway.com/kernel/${release}/Module.symvers" -O /usr/src/linux/Module.symvers
+make -C /usr/src/linux prepare modules_prepare
 ```
 
 Then you can make your module as usual by configuring `KDIR=/lib/modules/$(uname -r)/build/`
