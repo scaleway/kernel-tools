@@ -1,0 +1,59 @@
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 931c13a..14d27e3 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3581,7 +3581,7 @@ __init int intel_pmu_init(void)
+ 		memcpy(hw_cache_extra_regs, slm_hw_cache_extra_regs,
+ 		       sizeof(hw_cache_extra_regs));
+ 
+-		intel_pmu_lbr_init_atom();
++		intel_pmu_lbr_init_slm();
+ 
+ 		x86_pmu.event_constraints = intel_slm_event_constraints;
+ 		x86_pmu.pebs_constraints = intel_slm_pebs_event_constraints;
+diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+index ad26ca7..317e29e 100644
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -1058,6 +1058,24 @@ void __init intel_pmu_lbr_init_atom(void)
+ 	pr_cont("8-deep LBR, ");
+ }
+ 
++/* slm */
++void __init intel_pmu_lbr_init_slm(void)
++{
++	x86_pmu.lbr_nr	   = 8;
++	x86_pmu.lbr_tos    = MSR_LBR_TOS;
++	x86_pmu.lbr_from   = MSR_LBR_CORE_FROM;
++	x86_pmu.lbr_to     = MSR_LBR_CORE_TO;
++
++	x86_pmu.lbr_sel_mask = LBR_SEL_MASK;
++	x86_pmu.lbr_sel_map  = nhm_lbr_sel_map;
++
++	/*
++	 * SW branch filter usage:
++	 * - compensate for lack of HW filter
++	 */
++	pr_cont("8-deep LBR, ");
++}
++
+ /* Knights Landing */
+ void intel_pmu_lbr_init_knl(void)
+ {
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 8b78481..7d62a02 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -909,6 +909,8 @@ void intel_pmu_lbr_init_nhm(void);
+ 
+ void intel_pmu_lbr_init_atom(void);
+ 
++void intel_pmu_lbr_init_slm(void);
++
+ void intel_pmu_lbr_init_snb(void);
+ 
+ void intel_pmu_lbr_init_hsw(void);
+-- 
+2.5.0
+
+  
