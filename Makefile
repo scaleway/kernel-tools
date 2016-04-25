@@ -67,6 +67,10 @@ info:
 	@echo "S3_TARGET		$(S3_TARGET)"
 
 
+bump-builder:
+	docker pull $(DOCKER_BUILDER)
+
+
 create:
 	@test -d ./$(KERNEL) && echo "  Kernel $(KERNEL) already exists !" && exit 1 || true
 	mkdir -p $(KERNEL)
