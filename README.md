@@ -43,6 +43,7 @@ make -C /usr/src/linux prepare modules_prepare
 
 Then you can make your module as usual by configuring `KDIR=/lib/modules/$(uname -r)/build/`
 
+Alternatively, you can now build a DKMS-based kernel module, for instance: `apt-get install zfsutils-linux`
 
 ## Kernels
 
