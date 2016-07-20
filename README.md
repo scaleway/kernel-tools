@@ -191,6 +191,33 @@ rm -rf $ARTIFACTS/modules && \
   - The Extended 4 (ext4) filesystem -> **YES**
 ```
 
+### How to bump multiple kernels at once
+
+```bash
+# It's an example to bump the kernels from 4.5.7 to 4.6.4
+git mv x86_64/4.{5.7,6.4}-std
+git mv x86_64/4.{5.7,6.4}-docker
+git mv x86_64/4.{5.7,6.4}-apparmor
+git mv x86_64/4.{5.7,6.4}-coreos
+git mv x86_64/4.{5.7,6.4}-fedora
+git mv x86_64/4.{5.7,6.4}-rancher
+git mv armv7l/4.{5.7,6.4}-std
+git mv armv7l/4.{5.7,6.4}-apparmor
+git mv armv7l/4.{5.7,6.4}-debug
+git mv armv7l/4.{5.7,6.4}-docker
+git mv armv7l/4.{5.7,6.4}-fedora
+for kernel in `find x86_64 -name "4.6.4-*"`; do make oldconfig KERNEL=$kernel; done
+for kernel in `find armv7l -name "4.6.4-*"`; do make oldconfig KERNEL=$kernel; done
+```
+
+### How to bump a kernel
+
+```bash
+git mv x86_64/4.{5.7,6.4}-std
+make oldconfig KERNEL=x86_64/4.6.4-std
+```
+
+
 ## Licensing
 
 © 2014-2015 Scaleway - [MIT License](https://github.com/scaleway/kernel-tools/blob/master/LICENSE).
