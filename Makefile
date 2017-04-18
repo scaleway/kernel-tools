@@ -195,7 +195,6 @@ travis_kernel:	local_assets tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
 	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
-	# Checking C1 compatibility
 	./tools/verify_kernel_config.pl $(KERNEL_ARCH)-$(KERNEL_TYPE) $(KERNEL)/.config
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds
