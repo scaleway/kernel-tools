@@ -3,7 +3,7 @@ KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard armv7l/*-*/.latest)))
 
 # Default variables
 REVISION ?=		manual
-KERNELS ?=		$(wildcard x86_64/*-* armv7l/*-*)
+KERNELS ?=		$(wildcard x86_64/*-* armv7l/*-* aarch64/*-*)
 KERNEL_ARCH ?=		$(shell echo $(KERNEL) | cut -d/ -f1)
 -include $(KERNEL_ARCH)/include.mk
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d/ -f2 | cut -d- -f1)
