@@ -84,7 +84,7 @@ bzImage: apply-patches
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
-	make modules_install INSTALL_MOD_PATH=build
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
 	cd build/ && tar cf lib.tar lib
 	make install INSTALL_PATH=build
 	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
@@ -99,7 +99,7 @@ uImage: apply-patches
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
-	make modules_install INSTALL_MOD_PATH=build
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
 	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
 	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
@@ -116,7 +116,7 @@ vmlinux: apply-patches
 	make $(J) Image.gz modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
-	make modules_install INSTALL_MOD_PATH=build
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
 	cd build/ && tar cf lib.tar lib
 	make install INSTALL_PATH=build
 	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
