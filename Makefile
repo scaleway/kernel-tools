@@ -3,7 +3,7 @@ KERNEL ?=		$(patsubst %/,%,$(dir $(wildcard armv7l/*-*/.latest)))
 
 # Default variables
 REVISION ?=		manual
-KERNELS ?=		$(wildcard x86_64/*-* armv7l/*-*)
+KERNELS ?=		$(wildcard x86_64/*-* armv7l/*-* aarch64/*-*)
 KERNEL_ARCH ?=		$(shell echo $(KERNEL) | cut -d/ -f1)
 -include $(KERNEL_ARCH)/include.mk
 KERNEL_VERSION ?=	$(shell echo $(KERNEL) | cut -d/ -f2 | cut -d- -f1)
@@ -195,7 +195,6 @@ travis_kernel:	local_assets tools/lxc-checkconfig.sh tools/docker-checkconfig.sh
 	CONFIG=$(KERNEL)/.config GREP=grep ./tools/lxc-checkconfig.sh || true
 	CONFIG=$(KERNEL)/.config ./tools/docker-checkconfig.sh || true
 
-	# Checking C1 compatibility
 	./tools/verify_kernel_config.pl $(KERNEL_ARCH)-$(KERNEL_TYPE) $(KERNEL)/.config
 
 	# Disabling make oldconfig check for now because of the memory limit on travis CI builds

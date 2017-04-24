@@ -52,6 +52,10 @@ build_x86_64:
 	@mv build/build.txt build/build-prev.txt || true
 	$(MAKE) -f rules.mk bzImage build_info 2>&1 | tee build/build.txt
 
+build_aarch64:
+	@mv build/build.txt build/build-prev.txt || true
+	$(MAKE) -f rules.mk vmlinux build_info 2>&1 | tee build/build.txt
+
 
 build: build_$(KERNEL_ARCH)
 
@@ -80,7 +84,7 @@ bzImage: apply-patches
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
-	make modules_install INSTALL_MOD_PATH=build
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
 	cd build/ && tar cf lib.tar lib
 	make install INSTALL_PATH=build
 	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
@@ -95,7 +99,7 @@ uImage: apply-patches
 	make $(J) modules
 	make headers_install INSTALL_HDR_PATH=build
 	cd build/ && tar cf include.tar include
-	make modules_install INSTALL_MOD_PATH=build
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
 	cd build/ && tar cf lib.tar lib
 	make uinstall INSTALL_PATH=build
 	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
@@ -106,6 +110,18 @@ uImage: apply-patches
 	cp -f build/Image-$(KERNEL_VERSION) build/Image
 	cp arch/arm/boot/zImage build/zImage-$(KERNEL_VERSION)
 	cp -f build/zImage-$(KERNEL_VERSION) build/zImage
+	cp -f build/config-$(KERNEL_VERSION) build/config
+
+vmlinux: apply-patches
+	make $(J) Image.gz modules
+	make headers_install INSTALL_HDR_PATH=build
+	cd build/ && tar cf include.tar include
+	make modules_install INSTALL_MOD_PATH=build INSTALL_MOD_STRIP=1
+	cd build/ && tar cf lib.tar lib
+	make install INSTALL_PATH=build
+	for file in $(ARTIFACTS_TO_COPY); do cp $$file build/; done
+	echo $(KERNEL_VERSION)
+	cp vmlinux build/vmlinux-$(KERNEL_VERSION)
 	cp -f build/config-$(KERNEL_VERSION) build/config
 
 
