@@ -34,10 +34,9 @@ ln -fns "/usr/src/linux-${upstream}" /usr/src/linux
 ln -fns "/usr/src/linux-${upstream}" "/lib/modules/${release}/build"
 
 # Prepare kernel
-zcat /proc/config.gz > /usr/src/linux/.config
+zcat /proc/config.gz > /usr/src/linux/.config || wget -O /usr/src/linux/.config "http://mirror.scaleway.com/kernel/${arch}/${release}/config-${release}"
 printf 'CONFIG_LOCALVERSION="%s"\nCONFIG_CROSS_COMPILE=""\n' "${local:+-$local}" >> /usr/src/linux/.config
 wget -O /usr/src/linux/Module.symvers "http://mirror.scaleway.com/kernel/${arch}/${release}/Module.symvers"
-apt-get install -y libssl-dev # adapt to your package manager
 make -C /usr/src/linux prepare modules_prepare
 ```
 
