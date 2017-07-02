@@ -150,8 +150,7 @@ Run a `make oldconfig` with the newest version
   # ... configure using console interface
   ```
 
-- Building kewget -O .config https://raw.githubusercontent.com/scaleway/kernel-tools/master/x86_64/4.10.8-std/.config
-rnel and modules
+- Building kernel and modules
   ```bash
   make -j $(echo `nproc` ' * 2' | bc) uImage modules LOADADDR=0x8000
   ```
